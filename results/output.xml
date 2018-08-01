@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 3.0.4 (Python 3.7.0 on win32)" generated="20180801 16:25:14.067">
+<suite id="s1" name="UnitySuite" source="C:\Users\RyanVB\RobotKeywords\UnitySuite.robot">
+<kw name="suite Inital Conditions" type="setup">
+<kw name="Open Browser" library="SeleniumLibrary">
+<doc>Opens a new browser instance to the given ``url``.</doc>
+<arguments>
+<arg>${page}</arg>
+<arg>${browser}</arg>
+</arguments>
+<msg timestamp="20180801 16:25:14.521" level="INFO">Opening browser 'GoogleChrome' to base url 'http://pcm-dev1-1163553704.eu-west-2.elb.amazonaws.com/unity/#'.</msg>
+<status status="PASS" starttime="20180801 16:25:14.520" endtime="20180801 16:25:22.025"></status>
+</kw>
+<kw name="Maximize Browser Window" library="SeleniumLibrary">
+<doc>Maximizes current browser window.</doc>
+<status status="PASS" starttime="20180801 16:25:22.025" endtime="20180801 16:25:23.265"></status>
+</kw>
+<kw name="Set Selenium Speed" library="SeleniumLibrary">
+<doc>Sets the delay that is waited after each Selenium command.</doc>
+<arguments>
+<arg>0.5</arg>
+</arguments>
+<status status="PASS" starttime="20180801 16:25:23.265" endtime="20180801 16:25:23.265"></status>
+</kw>
+<status status="PASS" starttime="20180801 16:25:14.520" endtime="20180801 16:25:23.265"></status>
+</kw>
+<test id="s1-t1" name="Add SDT Root">
+<kw name="Open Context Menu" library="SeleniumLibrary">
+<doc>Opens context menu on element identified by ``locator``.</doc>
+<arguments>
+<arg>xpath: //*[text()= 'Root']</arg>
+</arguments>
+<kw name="Capture Page Screenshot" library="SeleniumLibrary">
+<doc>Takes screenshot of the current page and embeds it into log file.</doc>
+<msg timestamp="20180801 16:25:24.686" level="INFO" html="yes">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-4.png"&gt;&lt;img src="selenium-screenshot-4.png" width="800px"&gt;&lt;/a&gt;</msg>
+<status status="PASS" starttime="20180801 16:25:23.798" endtime="20180801 16:25:24.686"></status>
+</kw>
+<msg timestamp="20180801 16:25:24.698" level="FAIL">Element with locator 'xpath: //*[text()= 'Root']' not found.</msg>
+<status status="FAIL" starttime="20180801 16:25:23.266" endtime="20180801 16:25:24.698"></status>
+</kw>
+<status status="FAIL" starttime="20180801 16:25:23.266" endtime="20180801 16:25:24.698" critical="yes">Element with locator 'xpath: //*[text()= 'Root']' not found.</status>
+</test>
+<test id="s1-t2" name="Add SDT Cat 3">
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>xpath: //*[text()= 'Cat 1 - Auto']</arg>
+</arguments>
+<msg timestamp="20180801 16:25:24.700" level="INFO">Clicking element 'xpath: //*[text()= 'Cat 1 - Auto']'.</msg>
+<status status="PASS" starttime="20180801 16:25:24.700" endtime="20180801 16:25:25.826"></status>
+</kw>
+<kw name="Open Context Menu" library="SeleniumLibrary">
+<doc>Opens context menu on element identified by ``locator``.</doc>
+<arguments>
+<arg>xpath: //*[text()= 'Cat 3 - Auto']</arg>
+</arguments>
+<status status="PASS" starttime="20180801 16:25:25.827" endtime="20180801 16:25:27.407"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>xpath: //*[text() = 'Add New Service Delivery Type']</arg>
+</arguments>
+<msg timestamp="20180801 16:25:27.408" level="INFO">Clicking element 'xpath: //*[text() = 'Add New Service Delivery Type']'.</msg>
+<status status="PASS" starttime="20180801 16:25:27.408" endtime="20180801 16:25:28.506"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>id: Category1</arg>
+<arg>AutoTest Cat 1</arg>
+</arguments>
+<msg timestamp="20180801 16:25:28.507" level="INFO">Typing text 'AutoTest Cat 1' into text field 'id: Category1'.</msg>
+<status status="PASS" starttime="20180801 16:25:28.507" endtime="20180801 16:25:30.181"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>id: Category2</arg>
+<arg>Cat 2</arg>
+</arguments>
+<msg timestamp="20180801 16:25:30.182" level="INFO">Typing text 'Cat 2' into text field 'id: Category2'.</msg>
+<status status="PASS" starttime="20180801 16:25:30.181" endtime="20180801 16:25:31.833"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>id: Category3</arg>
+<arg>Cat 3</arg>
+</arguments>
+<msg timestamp="20180801 16:25:31.834" level="INFO">Typing text 'Cat 3' into text field 'id: Category3'.</msg>
+<status status="PASS" starttime="20180801 16:25:31.833" endtime="20180801 16:25:33.474"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>id: Code</arg>
+<arg>AUTO_CAT_3</arg>
+</arguments>
+<msg timestamp="20180801 16:25:33.474" level="INFO">Typing text 'AUTO_CAT_3' into text field 'id: Code'.</msg>
+<status status="PASS" starttime="20180801 16:25:33.474" endtime="20180801 16:25:35.126"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>id: Text</arg>
+<arg>Auto Gen SDT From Cat 3</arg>
+</arguments>
+<msg timestamp="20180801 16:25:35.126" level="INFO">Typing text 'Auto Gen SDT From Cat 3' into text field 'id: Text'.</msg>
+<status status="PASS" starttime="20180801 16:25:35.126" endtime="20180801 16:25:36.868"></status>
+</kw>
+<kw name="Click Button" library="SeleniumLibrary">
+<doc>Clicks button identified by ``locator``.</doc>
+<arguments>
+<arg>class: btn-save</arg>
+</arguments>
+<msg timestamp="20180801 16:25:36.868" level="INFO">Clicking button 'class: btn-save'.</msg>
+<status status="PASS" starttime="20180801 16:25:36.868" endtime="20180801 16:25:39.480"></status>
+</kw>
+<status status="PASS" starttime="20180801 16:25:24.699" endtime="20180801 16:25:39.480" critical="yes"></status>
+</test>
+<test id="s1-t3" name="Remove SDT">
+<kw name="Reload Page" library="SeleniumLibrary">
+<doc>Simulates user reloading page.</doc>
+<status status="PASS" starttime="20180801 16:25:39.481" endtime="20180801 16:25:40.241"></status>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>2</arg>
+</arguments>
+<msg timestamp="20180801 16:25:42.243" level="INFO">Slept 2 seconds</msg>
+<status status="PASS" starttime="20180801 16:25:40.241" endtime="20180801 16:25:42.243"></status>
+</kw>
+<kw name="Click Element" library="SeleniumLibrary">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>xpath: //*[text() = 'AutoTest Cat 1']</arg>
+</arguments>
+<msg timestamp="20180801 16:25:42.243" level="INFO">Clicking element 'xpath: //*[text() = 'AutoTest Cat 1']'.</msg>
+<status status="PASS" starttime="20180801 16:25:42.243" endtime="20180801 16:25:43.347"></status>
+</kw>
+<kw name="Element Should Be Visible" library="SeleniumLibrary">
+<doc>Verifies that the element identified by ``locator`` is visible.</doc>
+<arguments>
+<arg>xpath: //*[text()= 'Auto Gen SDT From Cat 3']</arg>
+</arguments>
+<msg timestamp="20180801 16:25:44.395" level="INFO">Element 'xpath: //*[text()= 'Auto Gen SDT From Cat 3']' is displayed.</msg>
+<status status="PASS" starttime="20180801 16:25:43.347" endtime="20180801 16:25:44.395"></status>
+</kw>
+<kw name="Remove SDT">
+<arguments>
+<arg>Auto Gen SDT From Cat 3</arg>
+</arguments>
+<msg timestamp="20180801 16:25:44.401" level="FAIL">No keyword with name 'Remove SDT' found.</msg>
+<status status="FAIL" starttime="20180801 16:25:44.401" endtime="20180801 16:25:44.401"></status>
+</kw>
+<status status="FAIL" starttime="20180801 16:25:39.481" endtime="20180801 16:25:44.402" critical="yes">No keyword with name 'Remove SDT' found.</status>
+</test>
+<kw name="Close Browser" library="SeleniumLibrary" type="teardown">
+<doc>Closes the current browser.</doc>
+<status status="PASS" starttime="20180801 16:25:44.403" endtime="20180801 16:25:47.248"></status>
+</kw>
+<status status="FAIL" starttime="20180801 16:25:14.072" endtime="20180801 16:25:47.248"></status>
+</suite>
+<statistics>
+<total>
+<stat pass="1" fail="2">Critical Tests</stat>
+<stat pass="1" fail="2">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat pass="1" fail="2" id="s1" name="UnitySuite">UnitySuite</stat>
+</suite>
+</statistics>
+<errors>
+<msg timestamp="20180801 16:25:14.519" level="ERROR">Error in file 'C:\Users\RyanVB\RobotKeywords\UnitySuite.robot': Importing test library './resources/unitykeywords' failed: ValueError: Empty module name
+Traceback (most recent call last):
+  None
+PYTHONPATH:
+  C:\Users\RyanVB\RobotKeywords
+  D:\Program Files (x86)\Python\Python37\python37.zip
+  D:\Program Files (x86)\Python\Python37\DLLs
+  D:\Program Files (x86)\Python\Python37\lib
+  D:\Program Files (x86)\Python\Python37
+  D:\Program Files (x86)\Python\Python37\lib\site-packages</msg>
+</errors>
+</robot>
