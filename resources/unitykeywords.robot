@@ -1,5 +1,6 @@
 *** Settings ***
 Resource  generickeywords.robot
+Resource  variables.robot
 
 *** Keywords ***
 Refresh Unity
@@ -21,15 +22,15 @@ Fill Form
 Add SDT
     [Arguments]  ${parent}  ${code}  ${text}
     Item From Context Menu  ${parent}   Add New Service Delivery Type
-    input text  id: Category1   ${branch}[0]
-    input text  id: Category2   Cat 2
-    input text  id: Category3   Cat 3
-    input text  id: Code        AUTO_Root
-    input text  id: Text        Auto Gen SDT From Root
-    click button  class: btn-save
+    input text  id: Category1   @{branch}[0]
+    input text  id: Category2   @{branch}[1]
+    input text  id: Category3   @{branch}[2]
+    input text  id: Code        ${code}
+    input text  id: Text        ${text}
+    Click Confirm
 
 Remove SDT
     [Arguments]  ${sdt_name}
     open context menu  xpath: //*[text()='${sdt_name}']
     Click Text  Remove
-    click button  class: btn-ok
+    Click Confirm
