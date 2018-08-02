@@ -1,54 +1,30 @@
 *** Settings ***
 Library  SeleniumLibrary
-Library  ./resources/unitykeywords
+Resource  resources/generickeywords.robot
+Resource  resources/unitykeywords.robot
+Resource  resources/variables.robot
 
+Suite Setup     Run Keywords  Open Browser  ${page}  ${browser}
+...             AND           maximize browser window
+...             AND           Set Selenium Speed  0.5
 
-Suite Setup             Suite Inital Conditions
 Suite Teardown          close browser
 
-#Test Teardown           reload page
-
-
-*** Variables ***
-${browser}   GoogleChrome
-${page}     http://pcm-dev1-1163553704.eu-west-2.elb.amazonaws.com/unity/#
-
+Test Teardown  Refresh Unity
 
 *** Test Cases ***
 Add SDT Root
-    open context menu   xpath: //*[text()= 'Root']
-    click element  xpath: //*[text() = 'Add New Service Delivery Type']
-    input text  id: Category1   AutoTest Cat 1
-    input text  id: Category2   Cat 2
-    input text  id: Category3   Cat 3
-    input text  id: Code        AUTO_Root
-    input text  id: Text        Auto Gen SDT From Root
-    click button  class: btn-save
-    capture page screenshot
+    Add SDT
 
 
 
 Add SDT Cat 3
-    click element  xpath: //*[text()= 'Cat 1 - Auto']
-    open context menu   xpath: //*[text()= 'Cat 3 - Auto']
-    click element  xpath: //*[text() = 'Add New Service Delivery Type']
-    input text  id: Category1   AutoTest Cat 1
-    input text  id: Category2   Cat 2
-    input text  id: Category3   Cat 3
-    input text  id: Code        AUTO_CAT_3
-    input text  id: Text        Auto Gen SDT From Cat 3
-    click button  class: btn-save
+    Click Text    Cat 1 - Auto
 
-Remove SDT
-    reload page
-    sleep   2
-    click element  xpath: //*[text() = 'AutoTest Cat 1']
+
+Remove SDT Cat 3
+
+    Click Text    AutoTest Cat 1
     element should be visible  xpath: //*[text()= 'Auto Gen SDT From Cat 3']
     Remove SDT  Auto Gen SDT From Cat 3
     element should not be visible  xpath: //*[text() = 'Auto Gen SDT From Cat 3']
-
-*** Keywords ***
-suite Inital Conditions
-     Open Browser  ${page}  ${browser}
-     maximize browser window
-     Set Selenium Speed  0.5
