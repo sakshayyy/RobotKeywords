@@ -16,4 +16,3 @@ Item From Context Menu
 Text XPath
     [Arguments]  ${text}
     [return]  xpath: //*[text() = '${text}']
-
