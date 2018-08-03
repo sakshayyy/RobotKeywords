@@ -34,3 +34,30 @@ Remove SDT
     open context menu  xpath: //*[text()='${sdt_name}']
     Click Text  Remove
     Click Confirm
+
+Edit SDT
+    #TODO
+
+Add Stage
+    #TODO
+
+Edit Stage
+    #TODO
+
+Remove Stage
+    #TODO
+
+Add Activity
+    #TODO
+
+Add Form
+    #TODO
+
+Add Page Form Unity
+    #TODO
+
+Open Properties Manager For
+    #TODO
+
+Manage properties
+    #TODO
