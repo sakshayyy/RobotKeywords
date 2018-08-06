@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation  This file is for keywords that can be used throughout the tssting of ACT
+Documentation  This file is for keywords that can be used throughout the testing of ACT
 
 *** Keywords ***
 Click Text      # Click on an element by its text
