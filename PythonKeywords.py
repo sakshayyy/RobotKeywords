@@ -1,4 +1,4 @@
-# To use this file in your tests use "Library resources/PythonKeywords"
+# To use this file in your tests use "Library  resources/PythonKeywords.py"
 class PythonKeywords:
     counter = 0
 
