@@ -33,7 +33,7 @@ Test Add SDT Root  #Add SDT via root node
 Test SDT Edit
     #Given Should Be Equal  ${PREV TEST STATUS}  PASS
     When Click Text    @{staticbranch}[0]
-    And Edit SDT   Keep Static  @{staticbranch}  TEST_EDIT  Edit Test
+    And Edit SDT   xpath: //*[text() = 'Keep Static']  @{staticbranch}  TEST_EDIT  Edit Test
     Then element should not be visible  xpath: //*[text() = 'Auto Gen SDT From Root']
     And Edit SDT   From Root  @{testbranch}  AUTO_GEN_SDT_ROOT  From Root
 
