@@ -28,8 +28,8 @@ Test SDT Edit
     And Element Should Be Visible  xpath: //*[text() = 'Keep Static']
     When Edit SDT   xpath: //*[text() = 'EDIT']  @{staticbranch}  TEST_EDIT  Edit Test
     And Sleep    1
-    Then element should not be visible  xpath: //*[text() = 'EDIT']
-    And Edit SDT   xpath: //*[text() = 'Edit Test']  @{statbranch}  EDIT  EDIT
+    Then element should be visible  xpath: //*[text() = 'Edit Test']
+    And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  EDIT
 
 
 Test Add SDT Root  #Add SDT via root node
