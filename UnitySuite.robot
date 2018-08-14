@@ -34,9 +34,9 @@ Remove SDT Cat 3
     [Documentation]  Should remove the SDT from "Add SDT Cat 3"
     [Tags]  SDT  Remove  succed
     Click Text    AutoTest Cat 1
-    element should be visible  Text XPath  Auto Gen SDT From Cat 3
+    element should be visible  Text XPath Auto Gen SDT From Cat 3
     Remove SDT  Auto Gen SDT From Cat 3
-    element should not be visible  Text XPath  Auto Gen SDT From Cat 3
+    element should not be visible  Text XPath Auto Gen SDT From Cat 3
 
 
 

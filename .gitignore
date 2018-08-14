@@ -1,2 +1,4 @@
 *.png
 results/*
+__pycache__/*
+.idea/*
