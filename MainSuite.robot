@@ -6,7 +6,7 @@ Force Tags  Unity
 
 Suite Setup     Run Keywords  Open Browser  ${page}  ${browser}
 ...             AND           maximize browser window
-...             AND           Set Selenium Speed  0.2
+...             AND           Set Selenium Speed  0.1
 
 Suite Teardown  Close Browser
 
@@ -18,26 +18,28 @@ Test Teardown   Reload Page
 ${browser}      GoogleChrome
 ${rootnode}     xpath: //*[contains(@id, 'qId_/_')]
 @{staticbranch}  D o  Not  Alter  This  Branch
+${editsdt}     EDIT
 @{testbranch}       Cat 1 - Auto   Cat 2 - Auto   Cat 3 - Auto  Cat 4 - Auto  Cat 5 - Auto
-${uint}          Get Next Int
+@{Stage_types}
 
 
 *** Test Cases ***
 Test SDT Edit
-
+    [Documentation]  Should create a new SDT with the context menu from Root
+    [Tags]  SDT  Edit  succeed
     Given Expand Node  @{staticbranch}[0]
-    And Element Should Be Visible  xpath: //*[text() = 'Keep Static']
-    When Edit SDT   xpath: //*[text() = 'EDIT']  @{staticbranch}  TEST_EDIT  Edit Test
+    And Element Should Be Visible  xpath: //*[text() = '${editsdt}']
+    When Edit SDT   xpath: //*[text() = '${editsdt}']  @{staticbranch}  TEST_EDIT  Edit Test
     And Sleep    1
     Then element should be visible  xpath: //*[text() = 'Edit Test']
-    And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  EDIT
+    And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  ${editsdt}
 
 
 Test Add SDT Root  #Add SDT via root node
     [Documentation]  Should create a new SDT with the context menu from Root
     [Tags]  SDT  Add  succeed
     Given
-    When Add SDT  ${rootnode}  AUTO_GEN_SDT_ROOT  From Root
+    When Add SDT  ${rootnode}  AUTO_GEN_SDT_ROOT  From Root  @{testbranch}
     And Sleep    1
     Then Expand Node    @{testbranch}[0]
     And Element Should Be Visible   xpath: //*[text() = 'From Root']
@@ -58,13 +60,13 @@ Test Add SDT Cat 3  #Add SDT via specified cat 3 node
     #TODO - make less static
     [Documentation]  Should create a new SDT with the context menu from a catagoty 3 node
     [Tags]  SDT  Add  succeed
-    Expand Node  @{staticbranch}[0]  #Name of parent node
-    Add SDT       xpath: //*[text() = 'Alter']  AUTO_GEN_SDT_CAT3  From Cat 3
-    Sleep    1
-    Element Should Be Visible   xpath: //*[text() = 'From Cat 3']
+    Given Expand Node  @{staticbranch}[0]  #Name of parent node
+    When Add SDT       xpath: //*[text() = 'Alter']  AUTO_GEN_SDT_CAT3  From Cat 3  @{testbranch}
+    And Sleep    1
+    Then Element Should Be Visible   xpath: //*[text() = 'From Cat 3']
 
 
-Test Remove SDT
+Test Remove SDT  #
     #TODO - make less static
     [Documentation]  Should remove the SDT from "Add SDT Cat 3"
     [Tags]  SDT  Remove  succeed
@@ -75,8 +77,21 @@ Test Remove SDT
     Then element should not be visible   xpath: //*[text() = 'From Cat 3']
 
 
-Test Add Stage
-    Given Expand Node   @
+Test Add Stage  #
+    [Documentation]  Add Stage to Existing branch
+    [Tags]  Stage  Add  succeed
+    Given Expand Node   @{staticbranch}[0]
+    And Expand Node    ${editsdt}
+    When Add Stage    xpath: //*[text() = '${editsdt}']    text    0  0
+    Then Element Should Be Visible    locator
+
+
+Test Full Suite
+    Expand Node    @{staticbranch}[0]
+    Add SDT    @{staticbranch}[2]    FULL    FULL  @{staticbranch}
+    Expand Node    FULL
+    Add Stage    xpath: //*[text() = 'Keep Static']    text    0  0
+
 
 
 *** Keywords ***
@@ -85,22 +100,30 @@ Expand Node      # Click on an element by its text
     click element   xpath: //*[text()= '${text}']
     Sleep    0.5
 
+
 Click Confirm   # Click the Save button at the bottom of Add, remove and edit panes
     click button  class: btn-success
+    Sleep   0.5
 
 Click Cancel    # Click the cancel button at the bottom of Add, remove and edit panes
     click button  class: btn-danger
+    Sleep   0.5
+
 
 Item From Context Menu  # Selects the action from the Context menu by text
     [Arguments]     ${locator}  ${action}
     Open Context Menu  ${locator}
     click element   xpath: //*[text()= '${action}']
+    sleep  0.5
+
 
 Text XPath ${text}    # Gets an element by its text attribute
     [return]  xpath: //*[text() = '${text}']
 
+
 Id XPath ${text}    # Gets an element by a partial id attribute
     [return]  xpath: //*[contains(@id, '${text}')]
+
 
 Get Visible Nodes  # Get a list of all currently visible nodes
     @{visible}=  create list
@@ -109,27 +132,30 @@ Get Visible Nodes  # Get a list of all currently visible nodes
     \   Append To List  @{visable}  get text  ${node}
     [Return]  @{visable}
 
-Fill Form  #takes list of feild ids and text values and inputs the text into the fields
+
+Fill Text Form  #takes list of feild ids and text values and inputs the text into the fields
     [Arguments]  @{fields}
     :FOR  ${id}  ${value}  in  @{fields}
     \   input text  ${id}  ${value}
 
+
 Add SDT  #
-    [Arguments]  ${parent}  ${code}  ${text}
+    [Arguments]  ${parent}  ${code}  ${text}  @{Catagories}
     Item From Context Menu  ${parent}  Add New Service Delivery Type
-    input text  id: Category1   @{testbranch}[0]
-    input text  id: Category2   @{testbranch}[1]
-    input text  id: Category3   @{testbranch}[2]
-    input text  id: Category4   @{testbranch}[3]
-    input text  id: Category5   @{testbranch}[4]
+    input text  id: Category1   @{Catagories}[0]
+    input text  id: Category2   @{Catagories}[1]
+    input text  id: Category3   @{Catagories}[2]
+    input text  id: Category4   @{Catagories}[3]
+    input text  id: Category5   @{Catagories}[4]
     input text  id: Code        ${code}
     input text  id: Text        ${text}
     Click Confirm
 
-Remove Node
+Remove Node  # Generic Remove
     [Arguments]  ${sdt_name}
     Item From Context Menu  ${sdt_name}  Remove
     Click Confirm
+
 
 Edit SDT  #Open the edit menu for SDT make change and save
     [Arguments]  ${locator}  @{input}
@@ -144,34 +170,51 @@ Edit SDT  #Open the edit menu for SDT make change and save
     Click Confirm
 
 
-Add Stage
+Add Stage  #Add Stage. Takes SDT node, Event type and 2 drop down indexes
     #TODO
-    [Arguments]  ${locator}  ${text}  @{selections}
+    [Arguments]  ${locator}  ${event}  @{selections}
     Item From Context Menu  ${locator}  Add New Stage
-    Input Text   ${locator}  ${text}
-    Select From List By Index    id: StageName  @{selections}[0]
+    Select From List By index  id: StageName  @{selections}[0]
     Select From List By Index    id: StageName  @{selections}[1]
-    Input Text    id: EventTypeCode    TEST_EVENT
+    Input Text    id: EventTypeCode    ${event}
+    Click Confirm
 
 
-Edit Stage  ${id} in ${stage}
-    Expand Node  ${stage}
-    Item From Context Menu  ${id}  Edit
+Edit Stage
+    [Arguments]  ${locator}
+    Item From Context Menu  ${locator}  Edit
 
-Remove Stage
-    #TODO
+
 
 Add Activity
     #TODO
+    [Arguments]  ${locator}  ${text}  ${event}
+    Item From Context Menu  ${locator}  Add New Activity
+    Input Text    id: ActivityName    ${text}
+    Input Text    id: EventTypeCode    ${event}
+    Click Confirm
+
 
 Add Form
     #TODO
+    [Arguments]  ${locator}  ${text}
+    Item From Context Menu  ${locator}  Add New Form
+    Click Confirm
+
+
 
 Add Page In Unity
     #TODO
+    [Arguments]  ${locator}  ${text}
+    Item From Context Menu  ${locator}  Add New Page
+    Input Text    id: PageName    ${text}
+    Click Confirm
 
-Open Properties Manager For
-    #TODO
 
-Manage properties
+Open Properties Manager
+    [Arguments]  ${locator}
+    Item From Context Menu  ${locator}  Edit Properties
+
+
+Add Property
     #TODO
