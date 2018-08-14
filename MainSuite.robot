@@ -1,6 +1,6 @@
 *** Settings ***
 Library   SeleniumLibrary
-Library   PythonKeywords.py
+#Library   PythonKeywords.py
 
 Force Tags  Unity
 
@@ -24,6 +24,7 @@ ${uint}          Get Next Int
 
 *** Test Cases ***
 Test SDT Edit
+
     Given Expand Node  @{staticbranch}[0]
     And Element Should Be Visible  xpath: //*[text() = 'Keep Static']
     When Edit SDT   xpath: //*[text() = 'EDIT']  @{staticbranch}  TEST_EDIT  Edit Test
@@ -35,18 +36,20 @@ Test SDT Edit
 Test Add SDT Root  #Add SDT via root node
     [Documentation]  Should create a new SDT with the context menu from Root
     [Tags]  SDT  Add  succeed
-    Add SDT  ${rootnode}  AUTO_GEN_SDT_ROOT  From Root
-    Sleep    1
-    Element Should Be Visible   xpath: //*[text() = 'From Root']
+    Given
+    When Add SDT  ${rootnode}  AUTO_GEN_SDT_ROOT  From Root
+    And Sleep    1
+    Then Expand Node    @{testbranch}[0]
+    And Element Should Be Visible   xpath: //*[text() = 'From Root']
 
 
-Test Remove SDT From Root
+Test Remove SDT From Root  #Remove
     #TODO - make less static
     [Documentation]  Should remove the SDT from "Add SDT Cat 3"
     [Tags]  SDT  Remove  succeed
     Given Expand Node  @{testbranch}[0]
     And Element Should Be Visible    xpath: //*[text() = 'Auto Gen SDT From Root']
-    When Remove SDT   xpath: //*[text() = 'From Root']
+    When Remove Node   xpath: //*[text() = 'From Root']
     And Sleep    1
     Then element should not be visible   xpath: //*[text() = 'Auto Gen SDT From Root']
 
@@ -67,10 +70,13 @@ Test Remove SDT
     [Tags]  SDT  Remove  succeed
     Given Expand Node  @{testbranch}[0]
     And Element Should Be Visible    xpath: //*[text() = 'From Cat 3']
-    When Remove SDT   xpath: //*[text() = 'From Cat 3']
+    When Remove Node   xpath: //*[text() = 'From Cat 3']
     And Sleep    1
     Then element should not be visible   xpath: //*[text() = 'From Cat 3']
 
+
+Test Add Stage
+    Given Expand Node   @
 
 
 *** Keywords ***
@@ -120,7 +126,7 @@ Add SDT  #
     input text  id: Text        ${text}
     Click Confirm
 
-Remove SDT
+Remove Node
     [Arguments]  ${sdt_name}
     Item From Context Menu  ${sdt_name}  Remove
     Click Confirm
@@ -140,6 +146,13 @@ Edit SDT  #Open the edit menu for SDT make change and save
 
 Add Stage
     #TODO
+    [Arguments]  ${locator}  ${text}  @{selections}
+    Item From Context Menu  ${locator}  Add New Stage
+    Input Text   ${locator}  ${text}
+    Select From List By Index    id: StageName  @{selections}[0]
+    Select From List By Index    id: StageName  @{selections}[1]
+    Input Text    id: EventTypeCode    TEST_EVENT
+
 
 Edit Stage  ${id} in ${stage}
     Expand Node  ${stage}
