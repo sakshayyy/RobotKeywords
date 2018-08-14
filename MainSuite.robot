@@ -83,7 +83,7 @@ Test Add Stage  #
     Given Expand Node   @{staticbranch}[0]
     And Expand Node    ${editsdt}
     When Add Stage    xpath: //*[text() = '${editsdt}']    text    0  0
-    Then Element Should Be Visible    locator
+    Then Element Should Be Visible
 
 
 Test Full Suite
