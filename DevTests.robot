@@ -1,10 +1,11 @@
 *** Settings ***
-Library  resources/PythonKeywords
+Library  SeleniumLibrary
 Documentation    Suite description
+
+Set Selenium Speed  0.5
 
 *** Test Cases ***
 Test title
     [Tags]    DEBUG
-    log to console  Get Next Int
-
-
+    Open Browser  ${page}  GoogleChrome
+    Click Element   xpath: //*[contains(@id, 'qId_/_')]
