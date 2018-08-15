@@ -6,11 +6,12 @@ Force Tags  Unity
 
 Suite Setup     Run Keywords  Open Browser  ${page}  ${browser}
 ...             AND           maximize browser window
-...             AND           Set Selenium Speed  0.1
+#...             AND           Set Selenium Speed  0.1
 
 Suite Teardown  Close Browser
 
 Test Setup      Sleep         2
+
 Test Teardown   Reload Page
 
 
@@ -85,7 +86,11 @@ Test Add Stage  #Add New Stage
     Given Expand Node   @{staticbranch}[0]
     And Expand Node    ${editsdt}
     When Add Stage    xpath: //*[text() = '${editsdt}']    test    @{stage_type}[4]  @{event_publish}[0]
-    Then Element Should Be Visible  xpath: //*[text() = '@{stage_type}[1]']
+    Then Element Should Be Visible  xpath: //*[text() = '@{stage_type}[4]']
+
+
+Test Add Activity
+    Add Activity  @{stage_type}[4]  Auto Activity  @{event_publish}[0]
 
 
 Test Full Suite
