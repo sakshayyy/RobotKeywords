@@ -1,4 +1,4 @@
-*** Settings ***
+  *** Settings ***
 Library  SeleniumLibrary
 #Library   PythonKeywords.py
 
@@ -265,4 +265,6 @@ Open Properties Manager
 
 
 Add Property
-    #TODO
+    [Arguments]  ${locator}
+    Click button  class="md-ripple"
+    Sleep  1
