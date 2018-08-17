@@ -21,7 +21,7 @@ Test Teardown   Reload Page
 ${browser}      GoogleChrome
 ${rootnode}     xpath: //*[contains(@id, 'qId_/_')]
 @{staticbranch}  D o  Not  Alter  This  Branch
-@{edit_sdt}     EDIT  RIS  Activity  Questionnaire : 920501013  PageX
+@{edit_sdt}     EDIT  RIS  ActivityX  Questionnaire : 920501013  PageX
 @{testbranch}       Cat 1 - Auto   Cat 2 - Auto   Cat 3 - Auto  Cat 4 - Auto  Cat 5 - Auto
 
 
@@ -35,6 +35,24 @@ Test SDT Edit
     When Edit SDT   xpath: //*[text() = '@{edit_sdt}[0]']  @{staticbranch}  TEST_EDIT  Edit Test
     Then element should be visible  xpath: //*[text() = 'Edit Test']
     And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  @{edit_sdt}[0]
+
+Test Edit Stage
+    [Documentation]  Should edit Stage values
+    [Tags]  Stage  Edit  succeed
+    Expand Node   @{staticbranch}[0]
+    Expand Node    @{edit_sdt}[0]
+    Edit Stage    xpath: //*[text()="@{edit_sdt}[1]"]   event    ALL
+    element should be visible  xpath: //*[text()="@{edit_sdt}[1]"]
+    Edit Stage    xpath: //*[text()="@{edit_sdt}[1]"]   Auto    NONE
+
+
+Test Edit Activity
+    [Documentation]  Should edit Stage values
+    [Tags]  Stage  Edit  succeed
+    Expand Node   @{staticbranch}[0]
+    Expand Node    @{edit_sdt}[0]
+    Edit Activity   xpath: //*[text()="@{edit_sdt}[2]"]   event    ALL
+
 
 
 Test Add SDT Root  #Add SDT via root node
@@ -139,6 +157,7 @@ Click Cancel    # Click the cancel button at the bottom of Add, remove and edit 
 Item From Context Menu  # Selects the action from the Context menu by text
     [Arguments]     ${locator}  ${action}
     Open Context Menu  ${locator}
+    Sleep    0.1
     click element   xpath: //*[text()= '${action}']
     sleep  1
 
@@ -216,6 +235,22 @@ Edit SDT  #Open the edit menu for SDT make change and save
     Click Confirm
 
 
+Edit Stage
+    [Arguments]  ${locator}  ${event}  ${publish}
+    Item From Context Menu  ${locator}  Edit Stage
+    Select From List By Label   id: PublishEvents  ${publish}
+    Input Text    id: EventTypeCode    ${event}
+    Click Confirm
+
+
+Edit Activity
+    [Arguments]  ${locator}  ${name}  ${publish}
+    Item From Context Menu  ${locator}  Edit Activity
+    Select From List By Label   id: PublishEvents  ${publish}
+    Input Text    id: ActivityName    ${name}
+    Click Confirm
+
+
 Add Stage  #Add Stage. Takes SDT node, Event type and 2 drop down indexes
     #TODO
     [Arguments]  ${locator}  ${event}  @{selections}
@@ -224,11 +259,6 @@ Add Stage  #Add Stage. Takes SDT node, Event type and 2 drop down indexes
     Select From List By Label    id: PublishEvents  @{selections}[1]
     Input Text    id: EventTypeCode    ${event}
     Click Confirm
-
-
-Edit Stage
-    [Arguments]  ${locator}
-    Item From Context Menu  ${locator}  Edit
 
 
 Add Activity
