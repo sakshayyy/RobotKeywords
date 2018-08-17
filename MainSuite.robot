@@ -272,10 +272,14 @@ Add Property
     Click Save
     Sleep  1
 
-Click Save
-    Click Button  xpath: //*[text()="Save"]
+Cancel Property Changes
+    Click Button class: md-icon md-icon-font md-theme-default
     Sleep  1
 
 Click Add
     Click Button  xpath://*[text()="Add"]
+    Sleep  1
+
+Click Save
+    Click Button  xpath: //*[text()="Save"]
     Sleep  1
