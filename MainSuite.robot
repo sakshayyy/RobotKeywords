@@ -1,10 +1,10 @@
 *** Settings ***
-Library   SeleniumLibrary
+Library  SeleniumLibrary
 #Library   PythonKeywords.py
 
 Force Tags  Unity
 
-Suite Setup     Run Keywords  Open Browser  ${page}  ${browser}
+Suite Setup  Run Keywords  Open Browser  ${page}  ${browser}
 ...             AND           maximize browser window
 #...             AND           Set Selenium Speed  0.1
 
@@ -21,7 +21,7 @@ Test Teardown   Reload Page
 ${browser}      GoogleChrome
 ${rootnode}     xpath: //*[contains(@id, 'qId_/_')]
 @{staticbranch}  D o  Not  Alter  This  Branch
-${editsdt}     EDIT
+@{edit_sdt}     EDIT  RIS  Activity  Questionnaire : 920501013  PageX
 @{testbranch}       Cat 1 - Auto   Cat 2 - Auto   Cat 3 - Auto  Cat 4 - Auto  Cat 5 - Auto
 
 
@@ -31,11 +31,11 @@ Test SDT Edit
     [Documentation]  Should create a new SDT with the context menu from Root
     [Tags]  SDT  Edit  succeed
     Given Expand Node  @{staticbranch}[0]
-    And Element Should Be Visible  xpath: //*[text() = '${editsdt}']
-    When Edit SDT   xpath: //*[text() = '${editsdt}']  @{staticbranch}  TEST_EDIT  Edit Test
+    And Element Should Be Visible  xpath: //*[text() = '@{edit_sdt}[0]']
+    When Edit SDT   xpath: //*[text() = '@{edit_sdt}[0]']  @{staticbranch}  TEST_EDIT  Edit Test
     And Sleep    1
     Then element should be visible  xpath: //*[text() = 'Edit Test']
-    And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  ${editsdt}
+    And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  @{edit_sdt}[0]
 
 
 Test Add SDT Root  #Add SDT via root node
@@ -84,28 +84,44 @@ Test Add Stage  #Add New Stage
     [Documentation]  Add Stage to Existing branch
     [Tags]  Stage  Add  succeed
     Given Expand Node   @{staticbranch}[0]
-    And Expand Node    ${editsdt}
-    When Add Stage    xpath: //*[text() = '${editsdt}']    test    @{stage_type}[4]  @{event_publish}[0]
+    And Expand Node    @{edit_sdt}[0]
+    When Add Stage    xpath: //*[text() = '@{edit_sdt}[0]']    test    @{stage_type}[4]  @{event_publish}[0]
     Then Element Should Be Visible  xpath: //*[text() = '@{stage_type}[4]']
+
+Test Remove Stage
+    Given Expand Node   @{staticbranch}[0]
+    And Expand Node    @{edit_sdt}[0]
+    When Remove Node    xpath: //*['@{stage_type}[4]']
+    Then Element Should Be Visible  xpath: //*[text() = 'Auto Activity']
 
 
 Test Add Activity
-    Add Activity  @{stage_type}[4]  Auto Activity  @{event_publish}[0]
+    Given Expand Node   @{staticbranch}[0]
+    And Expand Node    @{edit_sdt}[0]
+    When Add Activity  @{edit_sdt}[1]  Auto Activity  @{event_publish}[0]
+    Then Element Should Be Visible  xpath: //*[text() = 'Auto Activity']
 
 
-Test Full Suite
-    Expand Node    @{staticbranch}[0]
-    Add SDT    @{staticbranch}[2]    FULL    FULL  @{staticbranch}
-    Expand Node    FULL
-    Add Stage    xpath: //*[text() = 'Keep Static']    text    0  0
+Test Remove Activity
+    Given Expand Node   @{staticbranch}[0]
+    And Expand Node    @{edit_sdt}[0]
+    When Remove Node     xpath: //*['Auto Activity']
+    Then Element Should Be Visible  xpath: //*[text() = 'Auto Activity']
 
+
+Test Add Form
+    Given Expand Node   @{staticbranch}[0]
+    And Expand Node    @{edit_sdt}[0]
+    When Add Form    xpath: //*[text() = 'ActivityX']
+    ${n}=  Get Element Count    locator    locatorxpath: //*[text() = 'Questionnaire :']
+    Then Should Be Equal    ${n}    2
 
 
 *** Keywords ***
 Expand Node      # Click on an element by its text
     [Arguments]  ${text}
     click element   xpath: //*[text()= '${text}']
-    Sleep    1
+    Sleep    2
 
 
 Click Confirm   # Click the Save button at the bottom of Add, remove and edit panes
@@ -120,6 +136,7 @@ Click Cancel    # Click the cancel button at the bottom of Add, remove and edit 
 Item From Context Menu  # Selects the action from the Context menu by text
     [Arguments]     ${locator}  ${action}
     Open Context Menu  ${locator}
+    sleep  0.5
     click element   xpath: //*[text()= '${action}']
     sleep  1
 
@@ -159,9 +176,28 @@ Add SDT  #
     Click Confirm
 
 Remove Node  # Generic Remove
-    [Arguments]  ${sdt_name}
-    Item From Context Menu  ${sdt_name}  Remove
+    [Arguments]  ${node_name}  ${type}
+    Item From Context Menu  ${node_name}  Remove ${type}
     Click Confirm
+
+Remove SDT
+    [Arguments]  ${node_name}
+    Remove Node  ${node_name}
+
+
+Remove Stage
+    [Arguments]  ${node_name}
+    Remove Node  ${node_name}  Stage
+
+
+Remove Activity
+    [Arguments]  ${node_name}
+    Remove Node  ${node_name}  Activity
+
+
+Remove Form
+    [Arguments]  ${node_name}
+    Remove Node  ${node_name}  Form
 
 
 Edit SDT  #Open the edit menu for SDT make change and save
@@ -204,8 +240,8 @@ Add Activity
 
 Add Form
     #TODO
-    [Arguments]  ${locator}  ${text}
-    Item From Context Menu  ${locator}  Add New Form
+    [Arguments]  ${locator}
+    Item From Context Menu  ${locator}  Add new Form
     Click Confirm
 
 
