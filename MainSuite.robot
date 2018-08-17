@@ -265,6 +265,17 @@ Open Properties Manager
 
 
 Add Property
-    [Arguments]  ${locator}
-    Click button  class="md-ripple"
+    [Arguments]  ${locator}  ${text}  ${text}
+    Click Add
+    Input Text    id: md-input-atlvwrv0e
+    Input Text    id: md-input-ieai6brs
+    Click Save
+    Sleep  1
+
+Click Save
+    Click Button  xpath: //*[text()="Save"]
+    Sleep  1
+
+Click Add
+    Click Button  xpath://*[text()="Add"]
     Sleep  1
