@@ -33,7 +33,6 @@ Test SDT Edit
     Given Expand Node  @{staticbranch}[0]
     And Element Should Be Visible  xpath: //*[text() = '@{edit_sdt}[0]']
     When Edit SDT   xpath: //*[text() = '@{edit_sdt}[0]']  @{staticbranch}  TEST_EDIT  Edit Test
-    And Sleep    1
     Then element should be visible  xpath: //*[text() = 'Edit Test']
     And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  @{edit_sdt}[0]
 
@@ -43,7 +42,6 @@ Test Add SDT Root  #Add SDT via root node
     [Tags]  SDT  Add  succeed
     Given Element Should Be Visible    ${rootnode}
     When Add SDT  ${rootnode}  AUTO_GEN_SDT_ROOT  From Root  @{testbranch}
-    And Sleep    1
     Then Expand Node    @{testbranch}[0]
     And Element Should Be Visible   xpath: //*[text() = 'From Root']
 
@@ -54,8 +52,7 @@ Test Remove SDT From Root  #Remove
     [Tags]  SDT  Remove  succeed
     Given Expand Node  @{testbranch}[0]
     And Element Should Be Visible    xpath: //*[text() = 'From Root']
-    When Remove Node   xpath: //*[text() = 'From Root']
-    And Sleep    1
+    When Remove SDT   xpath: //*[text() = 'From Root']
     Then element should not be visible   xpath: //*[text() = 'From Root']
 
 
@@ -65,8 +62,8 @@ Test Add SDT Cat 3  #Add SDT via specified cat 3 node
     [Tags]  SDT  Add  succeed
     Given Expand Node  @{staticbranch}[0]  #Name of parent node
     When Add SDT       xpath: //*[text() = 'Alter']  AUTO_GEN_SDT_CAT3  From Cat 3  @{testbranch}
-    And Sleep    1
-    Then Element Should Be Visible   xpath: //*[text() = 'From Cat 3']
+    Then Expand Node    @{testbranch}[0]
+    And Element Should Be Visible   xpath: //*[text() = 'From Cat 3']
 
 
 Test Remove SDT  #
@@ -75,8 +72,7 @@ Test Remove SDT  #
     [Tags]  SDT  Remove  succeed
     Given Expand Node  @{testbranch}[0]
     And Element Should Be Visible    xpath: //*[text() = 'From Cat 3']
-    When Remove Node   xpath: //*[text() = 'From Cat 3']
-    And Sleep    1
+    When Remove SDT   xpath: //*[text() = 'From Cat 3']
     Then element should not be visible   xpath: //*[text() = 'From Cat 3']
 
 
@@ -85,14 +81,14 @@ Test Add Stage  #Add New Stage
     [Tags]  Stage  Add  succeed
     Given Expand Node   @{staticbranch}[0]
     And Expand Node    @{edit_sdt}[0]
-    When Add Stage    xpath: //*[text() = '@{edit_sdt}[0]']    test    @{stage_type}[4]  @{event_publish}[0]
-    Then Element Should Be Visible  xpath: //*[text() = '@{stage_type}[4]']
+    When Add Stage    xpath: //*[text() = '@{edit_sdt}[0]']    test    @{stage_type}[3]  @{event_publish}[0]
+    Then Element Should Be Visible  xpath: //*[text() = '@{stage_type}[3]']
 
 Test Remove Stage
     Given Expand Node   @{staticbranch}[0]
     And Expand Node    @{edit_sdt}[0]
-    When Remove Node    xpath: //*['@{stage_type}[4]']
-    Then Element Should Be Visible  xpath: //*[text() = 'Auto Activity']
+    When Remove Stage    xpath: //*['@{stage_type}[3]']
+    Then Element Should Not Be Visible  xpath: //*[text() = '@{stage_type}[3]']
 
 
 Test Add Activity
@@ -105,7 +101,7 @@ Test Add Activity
 Test Remove Activity
     Given Expand Node   @{staticbranch}[0]
     And Expand Node    @{edit_sdt}[0]
-    When Remove Node     xpath: //*['Auto Activity']
+    When Remove Activity  xpath: //*['Auto Activity']
     Then Element Should Be Visible  xpath: //*[text() = 'Auto Activity']
 
 
@@ -113,30 +109,40 @@ Test Add Form
     Given Expand Node   @{staticbranch}[0]
     And Expand Node    @{edit_sdt}[0]
     When Add Form    xpath: //*[text() = 'ActivityX']
-    ${n}=  Get Element Count    locator    locatorxpath: //*[text() = 'Questionnaire :']
+    ${n}=  Get Element Count    xpath: //*[text() = 'Questionnaire :']
     Then Should Be Equal    ${n}    2
+
+Test Remove Form
+    Expand Node   @{staticbranch}[0]
+    Expand Node    @{edit_sdt}[0]
+    @{n}=  Get WebElements  xpath: //*[contains(text(),'Questionnaire :')]
+    Log Many     @{n}
+    :FOR  ${form} in @{n}
+    \
+    \   ${form}= Get Text  ${form}
+    \   ${t}=  Evaluate    ${form} != "Questionnaire : 920501013"
+    \   Run Keyword If    condition    Remove Form    ${form}
 
 
 *** Keywords ***
 Expand Node      # Click on an element by its text
     [Arguments]  ${text}
     click element   xpath: //*[text()= '${text}']
-    Sleep    2
+    Sleep    1
 
 
 Click Confirm   # Click the Save button at the bottom of Add, remove and edit panes
     click button  class: btn-success
-    Sleep   0.5
+    Sleep   1
 
 Click Cancel    # Click the cancel button at the bottom of Add, remove and edit panes
     click button  class: btn-danger
-    Sleep   0.5
+    Sleep   1
 
 
 Item From Context Menu  # Selects the action from the Context menu by text
     [Arguments]     ${locator}  ${action}
     Open Context Menu  ${locator}
-    sleep  0.5
     click element   xpath: //*[text()= '${action}']
     sleep  1
 
@@ -182,7 +188,8 @@ Remove Node  # Generic Remove
 
 Remove SDT
     [Arguments]  ${node_name}
-    Remove Node  ${node_name}
+    Item From Context Menu  ${node_name}  Remove
+    Click Confirm
 
 
 Remove Stage
@@ -228,7 +235,6 @@ Edit Stage
     Item From Context Menu  ${locator}  Edit
 
 
-
 Add Activity
     #TODO
     [Arguments]  ${locator}  ${text}  ${event}
@@ -243,7 +249,6 @@ Add Form
     [Arguments]  ${locator}
     Item From Context Menu  ${locator}  Add new Form
     Click Confirm
-
 
 
 Add Page In Unity
