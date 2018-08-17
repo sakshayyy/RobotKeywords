@@ -1,4 +1,4 @@
-*** Settings ***
+  *** Settings ***
 Library  SeleniumLibrary
 #Library   PythonKeywords.py
 
@@ -291,4 +291,21 @@ Open Properties Manager
 
 
 Add Property
-    #TODO
+    [Arguments]  ${locator}  ${text}  ${text}
+    Click Add
+    Input Text    id: md-input-atlvwrv0e
+    Input Text    id: md-input-ieai6brs
+    Click Save
+    Sleep  1
+
+Cancel Property Changes
+    Click Button class: md-icon md-icon-font md-theme-default
+    Sleep  1
+
+Click Add
+    Click Button  xpath://*[text()="Add"]
+    Sleep  1
+
+Click Save
+    Click Button  xpath: //*[text()="Save"]
+    Sleep  1
