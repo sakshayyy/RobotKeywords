@@ -42,6 +42,7 @@ Test Add SDT Root  #Add SDT via root node
     [Tags]  SDT  Add  succeed
     Given Element Should Be Visible    ${rootnode}
     When Add SDT  ${rootnode}  AUTO_GEN_SDT_ROOT  From Root  @{testbranch}
+    And Sleep    1
     Then Expand Node    @{testbranch}[0]
     And Element Should Be Visible   xpath: //*[text() = 'From Root']
 
@@ -87,41 +88,36 @@ Test Add Stage  #Add New Stage
 Test Remove Stage
     Given Expand Node   @{staticbranch}[0]
     And Expand Node    @{edit_sdt}[0]
-    When Remove Stage    xpath: //*['@{stage_type}[3]']
+    When Remove Stage    xpath: //*[text()='@{stage_type}[3]']
     Then Element Should Not Be Visible  xpath: //*[text() = '@{stage_type}[3]']
 
 
 Test Add Activity
     Given Expand Node   @{staticbranch}[0]
     And Expand Node    @{edit_sdt}[0]
-    When Add Activity  @{edit_sdt}[1]  Auto Activity  @{event_publish}[0]
+    When Add Activity  xpath: //*[text() = '@{edit_sdt}[1]']  Auto Activity  @{event_publish}[0]
     Then Element Should Be Visible  xpath: //*[text() = 'Auto Activity']
 
 
 Test Remove Activity
     Given Expand Node   @{staticbranch}[0]
     And Expand Node    @{edit_sdt}[0]
-    When Remove Activity  xpath: //*['Auto Activity']
-    Then Element Should Be Visible  xpath: //*[text() = 'Auto Activity']
+    When Remove Activity  xpath: //*[text()='Auto Activity']
+    Then Element Should not Be Visible  xpath: //*[text() = 'Auto Activity']
 
 
 Test Add Form
     Given Expand Node   @{staticbranch}[0]
     And Expand Node    @{edit_sdt}[0]
     When Add Form    xpath: //*[text() = 'ActivityX']
-    ${n}=  Get Element Count    xpath: //*[text() = 'Questionnaire :']
-    Then Should Be Equal    ${n}    2
 
 Test Remove Form
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
     @{n}=  Get WebElements  xpath: //*[contains(text(),'Questionnaire :')]
     Log Many     @{n}
-    :FOR  ${form} in @{n}
-    \
-    \   ${form}= Get Text  ${form}
-    \   ${t}=  Evaluate    ${form} != "Questionnaire : 920501013"
-    \   Run Keyword If    condition    Remove Form    ${form}
+    :FOR  ${form}  IN  @{n}
+    \  Remove Form    ${form}
 
 
 *** Keywords ***

@@ -22,6 +22,9 @@ class DBConect:
     def get_sdts(self, ):
         self.csr.execute("Select * From product_catalogue.service_delivery_type")
 
+    def get_forms(self, a_id):
+        self.csr.execute(sql.SQL("Select form_id From product_catalogue.activity_form Where activty_id in (%s)").format(a_id,))
+
     def __del__(self):
         self.cxn.close()
 
