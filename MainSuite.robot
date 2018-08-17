@@ -1,17 +1,12 @@
 *** Settings ***
 Library  SeleniumLibrary
 #Library   PythonKeywords.py
-
 Force Tags  Unity
-
 Suite Setup  Run Keywords  Open Browser  ${page}  ${browser}
 ...             AND           maximize browser window
 #...             AND           Set Selenium Speed  0.1
-
 Suite Teardown  Close Browser
-
 Test Setup      Sleep         2
-
 Test Teardown   Reload Page
 
 
@@ -53,7 +48,12 @@ Test Edit Activity
     Expand Node    @{edit_sdt}[0]
     Edit Activity   xpath: //*[text()="@{edit_sdt}[2]"]   event    ALL
 
-
+Test Edit Page
+    [Documentation]  Should edit Stage values
+    [Tags]  Stage  Edit  succeed
+    Expand Node   @{staticbranch}[0]
+    Expand Node    @{edit_sdt}[0]
+    Edit Activity   xpath: //*[text()="@{edit_sdt}"]   event
 
 Test Add SDT Root  #Add SDT via root node
     [Documentation]  Should create a new SDT with the context menu from Root
@@ -135,7 +135,8 @@ Test Remove Form
     @{n}=  Get WebElements  xpath: //*[contains(text(),'Questionnaire :')]
     Log Many     @{n}
     :FOR  ${form}  IN  @{n}
-    \  Remove Form    ${form}
+    \  ${condition}=  Evaluate  
+    \  Run Keyword If    ${condition}   Remove Form    ${form}
 
 
 *** Keywords ***
@@ -249,6 +250,12 @@ Edit Activity
     Select From List By Label   id: PublishEvents  ${publish}
     Input Text    id: ActivityName    ${name}
     Click Confirm
+
+
+Edit Page
+    [Arguments]  ${locator}  ${name}
+    Item From Context Menu  ${locator}  Edit Page
+    Input Text    id: PageName    ${name}
 
 
 Add Stage  #Add Stage. Takes SDT node, Event type and 2 drop down indexes
