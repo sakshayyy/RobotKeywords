@@ -1,4 +1,4 @@
-*** Settings ***
+  *** Settings ***
 Library  SeleniumLibrary
 #Library   PythonKeywords.py
 Force Tags  Unity
@@ -298,4 +298,21 @@ Open Properties Manager
 
 
 Add Property
-    #TODO
+    [Arguments]  ${text}  ${text}
+    Click Add
+    Input Text    id: md-input-atlvwrv0e    ${text}
+    Input Text    id: md-input-ieai6brs     ${text}
+    Click Save
+    Sleep  1
+
+Cancel Property Changes
+    Click Button class: md-ripple
+    Sleep  1
+
+Click Add
+    Click Button  xpath://*[text()="Add"]
+    Sleep  1
+
+Click Save
+    Click Button  xpath: //*[text()="Save"]
+    Sleep  1
