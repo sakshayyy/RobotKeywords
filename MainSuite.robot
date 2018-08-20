@@ -316,3 +316,7 @@ Click Add
 Click Save
     Click Button  xpath: //*[text()="Save"]
     Sleep  1
+
+Open Form In Clarity
+    [Arguments]   ${locator}
+    Item From Context Menu    ${locator}    Edit in Clarity
