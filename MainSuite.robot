@@ -294,27 +294,27 @@ Add Page In Unity
 
 Open Properties Manager
     [Arguments]  ${locator}
-    Item From Context Menu  ${locator}  Edit Properties
+    Item From Context Menu  ${locator}  Manage Properties
 
 
 Add Property
     [Arguments]   ${text}  ${text}
     Click Add
-    Input Text    xpath://input[class="md-input"][0]
-    Input Text    xpath://input[class="md-input"][1]
+    Input Text    xpath:(//*[@class='md-input'])[1]  ${text}
+    Input Text    xpath:(//*[@class='md-input'])[2]  ${text}
     Click Save
     Sleep  1
 
 Cancel Property Changes
-    Click Button class="md-ripple"
+    Click Button  class="md-ripple"
     Sleep  1
 
 Click Add
-    Click Button  xpath://*[text()="Add"]
+    Click Button  class: addBtn
     Sleep  1
 
 Click Save
-    Click Button  xpath: //*[text()="Save"]
+    Click Button  xpath: //*[@class = "md-button md-dense md-raised md-primary md-theme-default"]
     Sleep  1
 
 Open Form In Clarity
