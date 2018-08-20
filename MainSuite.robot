@@ -345,3 +345,11 @@ Add Control Via Button
 Reordering Controls
     [Arguments]  ${locator}
     Mouse Down
+
+Reorder
+    [Arguments]  @{locator} ${target}
+   #    Mouse Down  @{locator}[0]
+   #    #Mouse Out   @{locator}[0]
+   #    #Mouse Over  @{locator}[1]
+   #    Mouse Up    @{locator}[1]
+    Drag And Drop  ${locator}  ${target}
