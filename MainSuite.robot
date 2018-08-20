@@ -342,10 +342,6 @@ Add Control Via Button
     [Arguments]  ${control_name}
     Click Element    //*[text()="${control_name}"]/following-sibling::span[@class = "add"]
 
-Reordering Controls
-    [Arguments]  ${locator}
-    Mouse Down
-
 Reorder
     [Arguments]  @{locator} ${target}
    #    Mouse Down  @{locator}[0]
