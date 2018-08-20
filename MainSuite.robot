@@ -265,15 +265,15 @@ Open Properties Manager
 
 
 Add Property
-    [Arguments]  ${locator}  ${text}  ${text}
+    [Arguments]   ${text}  ${text}
     Click Add
-    Input Text    id: md-input-atlvwrv0e
-    Input Text    id: md-input-ieai6brs
+    Input Text    xpath://input[class="md-input"][0]
+    Input Text    xpath://input[class="md-input"][1]
     Click Save
     Sleep  1
 
 Cancel Property Changes
-    Click Button class: md-icon md-icon-font md-theme-default
+    Click Button class: 
     Sleep  1
 
 Click Add
