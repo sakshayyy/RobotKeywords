@@ -148,6 +148,10 @@ Add Alert control
     Open Controls menu
     Add Control Via Button  Alert
 
+Test 1
+    Open Browser    http://pcm-dev1-1163553704.eu-west-2.elb.amazonaws.com/clarity/#/forms/920501365?serviceDeliveryTypeCode=EDIT&stageName=RIS&activityName=ActivityX  GoogleChrome
+    Open Controls menu
+    Add Control Via Button  Alert
 
 *** Keywords ***
 Expand Node      # Click on an element by its text
@@ -339,4 +343,6 @@ Open Controls menu
 
 Add Control Via Button
     [Arguments]  ${control_name}
-    Click Element    //*[text()="${control_name}"]/following-sibling::span[@class = "add"]
+    Mouse Over     //*[text()="${control_name}"]/..
+    sleep  1
+    Click Element    locator   //*[text()="${control_name}"]/following-sibling::span[@class = "add"]
