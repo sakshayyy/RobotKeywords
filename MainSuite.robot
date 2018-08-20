@@ -148,10 +148,6 @@ Add Alert control
     Open Controls menu
     Add Control Via Button  Alert
 
-Test 1
-    Open Browser    http://pcm-dev1-1163553704.eu-west-2.elb.amazonaws.com/clarity/#/forms/920501365?serviceDeliveryTypeCode=EDIT&stageName=RIS&activityName=ActivityX  GoogleChrome
-    Open Controls menu
-    Add Control Via Button  Alert
 
 *** Keywords ***
 Expand Node      # Click on an element by its text
@@ -312,34 +308,24 @@ Open Properties Manager
 
 
 Add Property
-    [Arguments]   ${key}  ${value}
+    [Arguments]   ${text}  ${text}
     Click Add
-    Input Text    xpath:(//*[@class='md-input'])[1]  ${key}
-    Input Text    xpath:(//*[@class='md-input'])[2]  ${value}
+    Input Text    xpath:(//*[@class='md-input'])[1]  ${text}
+    Input Text    xpath:(//*[@class='md-input'])[2]  ${text}
     Click Save
-    Sleep  1
-
-Edit Property
-    [Arguments]  ${key}  ${value}
-    Mouse Over      xpath: (//*[@class: property-group col-sm-11])[1]
-    Click Button    class: editButton
-    Sleep  1
-    Input Text      xpath:(//*[@class='md-input'])[1] ${key}
-    Sleep  1
-    Input Text      xpath:(//*[@class='md-input'])[2] ${value}
     Sleep  1
 
 Click Add
     Click Button  class: addBtn
     Sleep  1
 
-Click Cancel
-    @{elems}=  Get WebElements  //*[@class = "md-button md-fab md-fab-top-right md-mini cancelButton md-theme-default"]
-    Click Button  @{elems}[-1]
-    Sleep  1
-
 Click Save
     Click Button  xpath: //*[@class = "md-button md-dense md-raised md-primary md-theme-default"]
+    Sleep  1
+
+Click Cancel
+    @{elems}=  Get Web Elements  //*[@class = "md-button md-fab md-fab-top-right md-mini cancelButton md-theme-default"]
+    Click Button  @{elems}[-1]
     Sleep  1
 
 Open Form In Clarity
@@ -354,6 +340,8 @@ Open Controls menu
 
 Add Control Via Button
     [Arguments]  ${control_name}
-    Mouse Over     //*[text()="${control_name}"]/..
-    sleep  1
-    Click Element    locator   //*[text()="${control_name}"]/following-sibling::span[@class = "add"]
+    Click Element    //*[text()="${control_name}"]/following-sibling::span[@class = "add"]
+
+Reordering Controls
+    [Arguments]  ${locator}
+    Mouse Down
