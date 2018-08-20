@@ -1,4 +1,4 @@
-  *** Settings ***
+*** Settings ***
 Library  SeleniumLibrary
 #Library   PythonKeywords.py
 Force Tags  Unity
@@ -137,6 +137,16 @@ Test Remove Form
     :FOR  ${form}  IN  @{n}
     \  ${condition}=  Evaluate
     \  Run Keyword If    ${condition}   Remove Form    ${form}
+
+
+Open Clarity From Unity
+    Expand Node   @{staticbranch}[0]
+    Expand Node    @{edit_sdt}[0]
+    Open Form In Clarity  xpath: //*[text()="Questionnaire : 920501285"]
+
+Add Alert control
+    Open Controls menu
+    Add Control Via Button  Alert
 
 
 *** Keywords ***
@@ -320,3 +330,13 @@ Click Save
 Open Form In Clarity
     [Arguments]   ${locator}
     Item From Context Menu    ${locator}    Edit in Clarity
+    @{windows}=  Get Window Handles
+    Select Window  @{windows}[-1]
+
+
+Open Controls menu
+    Click Element   xpath: //*[@class = "md-list-item app-form-controls-section"][2]
+
+Add Control Via Button
+    [Arguments]  ${control_name}
+    Click Element    //*[text()="${control_name}"]/following-sibling::span[@class = "add"]
