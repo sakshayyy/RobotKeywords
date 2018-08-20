@@ -320,7 +320,8 @@ Click Add
     Sleep  1
 
 Click Cancel
-    Click Button  xpath: //*[@class="md-button md-fab md-fab-top-right md-mini removeButton md-theme-default"]
+    @{elems}=  Get WebElements  //*[@class = "md-button md-fab md-fab-top-right md-mini cancelButton md-theme-default"]
+    Click Button  @{elems}[-1]
     Sleep  1
 
 Click Save
