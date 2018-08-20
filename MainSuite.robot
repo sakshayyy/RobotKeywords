@@ -367,10 +367,6 @@ Remove Control
     Mouse Over    xpath: //*[@class="${control}"]
     Click Button   xpath: //*[@class="${control}"]/descendant::button[@id= "deleteControlButton"]
 
-Reordering Controls
-    [Arguments]  ${locator}
-    Mouse Down
-
 Reorder
     [Arguments]  @{locator} ${target}
    #    Mouse Down  @{locator}[0]
