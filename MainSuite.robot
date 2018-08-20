@@ -273,7 +273,7 @@ Add Property
     Sleep  1
 
 Cancel Property Changes
-    Click Button class: 
+    Click Button class="md-ripple"
     Sleep  1
 
 Click Add
