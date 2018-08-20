@@ -298,19 +298,29 @@ Open Properties Manager
 
 
 Add Property
-    [Arguments]   ${text}  ${text}
+    [Arguments]   ${key}  ${value}
     Click Add
-    Input Text    xpath:(//*[@class='md-input'])[1]  ${text}
-    Input Text    xpath:(//*[@class='md-input'])[2]  ${text}
+    Input Text    xpath:(//*[@class='md-input'])[1]  ${key}
+    Input Text    xpath:(//*[@class='md-input'])[2]  ${value}
     Click Save
     Sleep  1
 
-Cancel Property Changes
-    Click Button  class="md-ripple"
+Edit Property
+    [Arguments]  ${key}  ${value}
+    Mouse Over      xpath: (//*[@class: property-group col-sm-11])[1]
+    Click Button    class: editButton
+    Sleep  1
+    Input Text      xpath:(//*[@class='md-input'])[1] ${key}
+    Sleep  1
+    Input Text      xpath:(//*[@class='md-input'])[2] ${value}
     Sleep  1
 
 Click Add
     Click Button  class: addBtn
+    Sleep  1
+
+Click Cancel
+    Click Button  xpath: //*[@class="md-button md-fab md-fab-top-right md-mini removeButton md-theme-default"]
     Sleep  1
 
 Click Save
