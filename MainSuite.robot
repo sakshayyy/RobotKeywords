@@ -335,6 +335,11 @@ Click Save
     Click Button  xpath: //*[@class = "md-button md-dense md-raised md-primary md-theme-default"]
     Sleep  1
 
+Click Cancel
+    @{elems}=  Get Web Elements  //*[@class = "md-button md-fab md-fab-top-right md-mini cancelButton md-theme-default"]
+    Click Button  @{elems}[-1]
+    Sleep  1
+
 Open Form In Clarity
     [Arguments]   ${locator}
     Item From Context Menu    ${locator}    Edit in Clarity
@@ -361,3 +366,15 @@ Remove Control
     [Arguments]  ${control}
     Mouse Over    xpath: //*[@class="${control}"]
     Click Button   xpath: //*[@class="${control}"]/descendant::button[@id= "deleteControlButton"]
+
+Reordering Controls
+    [Arguments]  ${locator}
+    Mouse Down
+
+Reorder
+    [Arguments]  @{locator} ${target}
+   #    Mouse Down  @{locator}[0]
+   #    #Mouse Out   @{locator}[0]
+   #    #Mouse Over  @{locator}[1]
+   #    Mouse Up    @{locator}[1]
+    Drag And Drop  ${locator}  ${target}
