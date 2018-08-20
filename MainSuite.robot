@@ -1,17 +1,12 @@
   *** Settings ***
 Library  SeleniumLibrary
 #Library   PythonKeywords.py
-
 Force Tags  Unity
-
 Suite Setup  Run Keywords  Open Browser  ${page}  ${browser}
 ...             AND           maximize browser window
 #...             AND           Set Selenium Speed  0.1
-
 Suite Teardown  Close Browser
-
 Test Setup      Sleep         2
-
 Test Teardown   Reload Page
 
 
@@ -21,7 +16,7 @@ Test Teardown   Reload Page
 ${browser}      GoogleChrome
 ${rootnode}     xpath: //*[contains(@id, 'qId_/_')]
 @{staticbranch}  D o  Not  Alter  This  Branch
-@{edit_sdt}     EDIT  RIS  Activity  Questionnaire : 920501013  PageX
+@{edit_sdt}     EDIT  RIS  ActivityX  Questionnaire : 920501013  PageX
 @{testbranch}       Cat 1 - Auto   Cat 2 - Auto   Cat 3 - Auto  Cat 4 - Auto  Cat 5 - Auto
 
 
@@ -36,12 +31,36 @@ Test SDT Edit
     Then element should be visible  xpath: //*[text() = 'Edit Test']
     And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  @{edit_sdt}[0]
 
+Test Edit Stage
+    [Documentation]  Should edit Stage values
+    [Tags]  Stage  Edit  succeed
+    Expand Node   @{staticbranch}[0]
+    Expand Node    @{edit_sdt}[0]
+    Edit Stage    xpath: //*[text()="@{edit_sdt}[1]"]   event    ALL
+    element should be visible  xpath: //*[text()="@{edit_sdt}[1]"]
+    Edit Stage    xpath: //*[text()="@{edit_sdt}[1]"]   Auto    NONE
+
+
+Test Edit Activity
+    [Documentation]  Should edit Stage values
+    [Tags]  Stage  Edit  succeed
+    Expand Node   @{staticbranch}[0]
+    Expand Node    @{edit_sdt}[0]
+    Edit Activity   xpath: //*[text()="@{edit_sdt}[2]"]   event    ALL
+
+Test Edit Page
+    [Documentation]  Should edit Stage values
+    [Tags]  Stage  Edit  succeed
+    Expand Node   @{staticbranch}[0]
+    Expand Node    @{edit_sdt}[0]
+    Edit Activity   xpath: //*[text()="@{edit_sdt}"]   event
 
 Test Add SDT Root  #Add SDT via root node
     [Documentation]  Should create a new SDT with the context menu from Root
     [Tags]  SDT  Add  succeed
     Given Element Should Be Visible    ${rootnode}
     When Add SDT  ${rootnode}  AUTO_GEN_SDT_ROOT  From Root  @{testbranch}
+    And Sleep    1
     Then Expand Node    @{testbranch}[0]
     And Element Should Be Visible   xpath: //*[text() = 'From Root']
 
@@ -87,41 +106,37 @@ Test Add Stage  #Add New Stage
 Test Remove Stage
     Given Expand Node   @{staticbranch}[0]
     And Expand Node    @{edit_sdt}[0]
-    When Remove Stage    xpath: //*['@{stage_type}[3]']
+    When Remove Stage    xpath: //*[text()='@{stage_type}[3]']
     Then Element Should Not Be Visible  xpath: //*[text() = '@{stage_type}[3]']
 
 
 Test Add Activity
     Given Expand Node   @{staticbranch}[0]
     And Expand Node    @{edit_sdt}[0]
-    When Add Activity  @{edit_sdt}[1]  Auto Activity  @{event_publish}[0]
+    When Add Activity  xpath: //*[text() = '@{edit_sdt}[1]']  Auto Activity  @{event_publish}[0]
     Then Element Should Be Visible  xpath: //*[text() = 'Auto Activity']
 
 
 Test Remove Activity
     Given Expand Node   @{staticbranch}[0]
     And Expand Node    @{edit_sdt}[0]
-    When Remove Activity  xpath: //*['Auto Activity']
-    Then Element Should Be Visible  xpath: //*[text() = 'Auto Activity']
+    When Remove Activity  xpath: //*[text()='Auto Activity']
+    Then Element Should not Be Visible  xpath: //*[text() = 'Auto Activity']
 
 
 Test Add Form
     Given Expand Node   @{staticbranch}[0]
     And Expand Node    @{edit_sdt}[0]
     When Add Form    xpath: //*[text() = 'ActivityX']
-    ${n}=  Get Element Count    xpath: //*[text() = 'Questionnaire :']
-    Then Should Be Equal    ${n}    2
 
 Test Remove Form
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
     @{n}=  Get WebElements  xpath: //*[contains(text(),'Questionnaire :')]
     Log Many     @{n}
-    :FOR  ${form} in @{n}
-    \
-    \   ${form}= Get Text  ${form}
-    \   ${t}=  Evaluate    ${form} != "Questionnaire : 920501013"
-    \   Run Keyword If    condition    Remove Form    ${form}
+    :FOR  ${form}  IN  @{n}
+    \  ${condition}=  Evaluate
+    \  Run Keyword If    ${condition}   Remove Form    ${form}
 
 
 *** Keywords ***
@@ -143,6 +158,7 @@ Click Cancel    # Click the cancel button at the bottom of Add, remove and edit 
 Item From Context Menu  # Selects the action from the Context menu by text
     [Arguments]     ${locator}  ${action}
     Open Context Menu  ${locator}
+    Sleep    0.1
     click element   xpath: //*[text()= '${action}']
     sleep  1
 
@@ -220,6 +236,28 @@ Edit SDT  #Open the edit menu for SDT make change and save
     Click Confirm
 
 
+Edit Stage
+    [Arguments]  ${locator}  ${event}  ${publish}
+    Item From Context Menu  ${locator}  Edit Stage
+    Select From List By Label   id: PublishEvents  ${publish}
+    Input Text    id: EventTypeCode    ${event}
+    Click Confirm
+
+
+Edit Activity
+    [Arguments]  ${locator}  ${name}  ${publish}
+    Item From Context Menu  ${locator}  Edit Activity
+    Select From List By Label   id: PublishEvents  ${publish}
+    Input Text    id: ActivityName    ${name}
+    Click Confirm
+
+
+Edit Page
+    [Arguments]  ${locator}  ${name}
+    Item From Context Menu  ${locator}  Edit Page
+    Input Text    id: PageName    ${name}
+
+
 Add Stage  #Add Stage. Takes SDT node, Event type and 2 drop down indexes
     #TODO
     [Arguments]  ${locator}  ${event}  @{selections}
@@ -228,11 +266,6 @@ Add Stage  #Add Stage. Takes SDT node, Event type and 2 drop down indexes
     Select From List By Label    id: PublishEvents  @{selections}[1]
     Input Text    id: EventTypeCode    ${event}
     Click Confirm
-
-
-Edit Stage
-    [Arguments]  ${locator}
-    Item From Context Menu  ${locator}  Edit
 
 
 Add Activity
