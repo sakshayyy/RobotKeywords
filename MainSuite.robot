@@ -134,7 +134,7 @@ Test Remove Form
     :FOR  ${form}  IN  @{n}
     \  ${condition}=  Evaluate
     \  Run Keyword If    ${condition}   Remove Form    ${form}
-    
+
 
 Test Add Page
     Given Expand Node    @{staticbranch}[0]
@@ -157,10 +157,8 @@ Open Clarity From Unity
     Open Form In Clarity  xpath: //*[text()="Questionnaire : 920501285"]
 
 
-
 Add controls
-
-    [Template]  Add Control Template
+    [Template]  Add Control Templates
     Alert  alert-control
     Data  data-control
     [Teardown]  Close Browser
