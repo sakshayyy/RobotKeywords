@@ -140,16 +140,8 @@ Test Add Form
 Test Remove Form
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
-<<<<<<< HEAD
-    @{n}=  Get WebElements  xpath: //*[contains(text(),'Questionnaire :')]
-    Log Many     @{n}
-    :FOR  ${form}  IN  @{n}
-    \  ${condition}=  Evaluate
-    \  Run Keyword If    ${condition}   Remove Form    ${form}
-=======
     ${form_name}=  Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
     Remove Form    ${form_name}
->>>>>>> 29f34f79769d9ab9da31a016be5abc0b48d6fd2a
 
 
 Test Add Page
@@ -173,11 +165,7 @@ Open Clarity From Unity
     Open Form In Clarity  xpath: //*[contains(text(), "Questionnaire :")][1]
 
 Add controls
-<<<<<<< HEAD
-    [Template]  Add Control Templates
-=======
     [Template]  Add Control Template
->>>>>>> 29f34f79769d9ab9da31a016be5abc0b48d6fd2a
     Alert  alert-control
     Data  data-control
     External link  externallink-control
