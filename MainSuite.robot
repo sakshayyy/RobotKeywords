@@ -129,7 +129,7 @@ Test Add Form
     And Expand Node    @{edit_sdt}[0]
     When Add Form    xpath: //*[text() = 'ActivityX']
 
-Test Remove Form
+Test Remove Forms
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
     @{n}=  Get WebElements  xpath: //*[contains(text(),'Questionnaire :')]
@@ -144,10 +144,18 @@ Open Clarity From Unity
     Expand Node    @{edit_sdt}[0]
     Open Form In Clarity  xpath: //*[text()="Questionnaire : 920501285"]
 
-Add Alert control
-    Open Controls menu
-    Add Control Via Button  Alert
 
+
+Add controls
+
+    [Template]  Add Control Template
+    Alert  alert-control
+    Data  data-control
+    [Teardown]  Close Browser
+
+#Remove Controls
+Test 1
+    Remove Control    data-control
 
 *** Keywords ***
 Expand Node      # Click on an element by its text
@@ -315,6 +323,10 @@ Add Property
     Click Save
     Sleep  1
 
+Cancel Property Changes
+    Click Button  class="md-ripple"
+    Sleep  1
+
 Click Add
     Click Button  class: addBtn
     Sleep  1
@@ -340,7 +352,20 @@ Open Controls menu
 
 Add Control Via Button
     [Arguments]  ${control_name}
-    Click Element    //*[text()="${control_name}"]/following-sibling::span[@class = "add"]
+    sleep  1
+    Mouse Over     //*[text()="${control_name}"]/../..
+    Click Element   //*[text()="${control_name}"]/following-sibling::span[@class = "add"]
+
+Add Control Template
+    [Arguments]  ${name}  ${id}
+    Open Controls menu
+    Add Control Via Button  ${name}
+    Element Should Be Visible   class: ${id}
+
+Remove Control
+    [Arguments]  ${control}
+    Mouse Over    xpath: //*[@class="${control}"]
+    Click Button   xpath: //*[@class="${control}"]/descendant::button[@id= "deleteControlButton"]
 
 Reorder
     [Arguments]  @{locator} ${target}
