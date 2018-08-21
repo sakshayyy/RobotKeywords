@@ -139,16 +139,13 @@ Test Add Form
 Test Remove Form
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
-<<<<<<< HEAD
     @{n}=  Get WebElements  xpath: //*[contains(text(),'Questionnaire :')]
     Log Many     @{n}
     :FOR  ${form}  IN  @{n}
     \  ${condition}=  Evaluate
     \  Run Keyword If    ${condition}   Remove Form    ${form}
-=======
     ${form_name}=  Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
     Remove Form    ${form_name}
->>>>>>> 39485252608452967100a118769d201b8f212f3b
 
 
 Test Add Page
