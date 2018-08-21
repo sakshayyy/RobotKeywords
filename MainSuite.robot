@@ -336,7 +336,7 @@ Open Form In Clarity
 
 
 Open Controls menu
-    Click Element   xpath: //*[@class = "md-list-item app-form-controls-section"][2]
+    Click Element   xpath: //*[@class = "md-list-item app-form-controls-section"][2]  
 
 Add Control Via Button
     [Arguments]  ${control_name}
