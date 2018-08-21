@@ -22,6 +22,16 @@ ${rootnode}     xpath: //*[contains(@id, 'qId_/_')]
 
 
 *** Test Cases ***
+Test SDT Edit
+    [Documentation]  Should create a new SDT with the context menu from Root
+    [Tags]  SDT  Edit  succeed
+    Given Expand Node  @{staticbranch}[0]
+    And Element Should Be Visible  xpath: //*[text() = '@{edit_sdt}[0]']
+    When Edit SDT   xpath: //*[text() = '@{edit_sdt}[0]']  @{staticbranch}  TEST_EDIT  Edit Test
+    Then element should be visible  xpath: //*[text() = 'Edit Test']
+    And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  @{edit_sdt}[0]
+
+
 Test Add SDT Root  #Add SDT via root node
     [Documentation]  Should create a new SDT with the context menu from Root
     [Tags]  SDT  Add  succeed
