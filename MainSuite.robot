@@ -16,7 +16,7 @@ Test Teardown   Reload Page
 ${browser}      GoogleChrome
 ${rootnode}     xpath: //*[contains(@id, 'qId_/_')]
 @{staticbranch}  D o  Not  Alter  This  Branch
-@{edit_sdt}     EDIT  RIS  ActivityX  Questionnaire : 920501285  PageX
+@{edit_sdt}     EDIT  RIS  ActivityX  Questionnaire : 920501013  New page
 @{testbranch}       Cat 1 - Auto   Cat 2 - Auto   Cat 3 - Auto  Cat 4 - Auto  Cat 5 - Auto
 
 
@@ -81,6 +81,7 @@ Test Add Stage  #Add New Stage
     Then Element Should Be Visible  xpath: //*[text() = '@{stage_type}[3]']
 
 
+
 Test Edit Stage
     [Documentation]  Should edit Stage values
     [Tags]  Stage  Edit  succeed
@@ -129,11 +130,16 @@ Test Add Form
 Test Remove Form
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
+<<<<<<< HEAD
     @{n}=  Get WebElements  xpath: //*[contains(text(),'Questionnaire :')]
     Log Many     @{n}
     :FOR  ${form}  IN  @{n}
     \  ${condition}=  Evaluate
     \  Run Keyword If    ${condition}   Remove Form    ${form}
+=======
+    ${form_name}=  Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
+    Remove Form    ${form_name}
+>>>>>>> 29f34f79769d9ab9da31a016be5abc0b48d6fd2a
 
 
 Test Add Page
@@ -154,18 +160,27 @@ Test Edit Page
 Open Clarity From Unity
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
-    Open Form In Clarity  xpath: //*[text()="Questionnaire : 920501285"]
-
+    Open Form In Clarity  xpath: //*[contains(text(), "Questionnaire :")][1]
 
 Add controls
+<<<<<<< HEAD
     [Template]  Add Control Templates
+=======
+    [Template]  Add Control Template
+>>>>>>> 29f34f79769d9ab9da31a016be5abc0b48d6fd2a
     Alert  alert-control
     Data  data-control
-    [Teardown]  Close Browser
+    External link  externallink-control
 
-#Remove Controls
-Test 1
+
+Reorder Controls
+    Reorder    xpath://* [@class="alert-control"]/*[@class= "vddl-handle handle"]  xpath: //*[@class = "externallink-control"]
+
+
+Remove Controls
     Remove Control    data-control
+
+
 
 *** Keywords ***
 Expand Node      # Click on an element by its text
@@ -178,7 +193,8 @@ Click Confirm   # Click the Save button at the bottom of Add, remove and edit pa
     click button  class: btn-success
     Sleep   1
 
-Click Cancel    # Click the cancel button at the bottom of Add, remove and edit panes
+
+Click Cancel Unity    # Click the cancel button at the bottom of Add, remove and edit panes
     click button  class: btn-danger
     Sleep   1
 
@@ -186,7 +202,7 @@ Click Cancel    # Click the cancel button at the bottom of Add, remove and edit 
 Item From Context Menu  # Selects the action from the Context menu by text
     [Arguments]     ${locator}  ${action}
     Open Context Menu  ${locator}
-    Sleep    0.1
+    Sleep    1
     click element   xpath: //*[text()= '${action}']
     sleep  1
 
@@ -225,10 +241,12 @@ Add SDT  #
     input text  id: Text        ${text}
     Click Confirm
 
+
 Remove Node  # Generic Remove
     [Arguments]  ${node_name}  ${type}
     Item From Context Menu  ${node_name}  Remove ${type}
     Click Confirm
+
 
 Remove SDT
     [Arguments]  ${node_name}
@@ -251,6 +269,14 @@ Remove Form
     Remove Node  ${node_name}  Form
 
 
+Remove All Forms
+    @{n}=  Get WebElements  xpath: //*[contains(text(),'Questionnaire :')]
+    Log Many     @{n}
+    :FOR  ${form}  IN  @{n}
+    \  ${condition}=  Evaluate
+    \  Run Keyword If    ${condition}   Remove Form    ${form}
+
+
 Edit SDT  #Open the edit menu for SDT make change and save
     [Arguments]  ${locator}  @{input}
     Item From Context Menu    ${locator}  Edit
@@ -266,7 +292,7 @@ Edit SDT  #Open the edit menu for SDT make change and save
 
 Edit Stage
     [Arguments]  ${locator}  ${event}  ${publish}
-    Item From Context Menu  ${locator}  Edit Stage
+    Item From Context Menu    ${locator}    Edit Stage
     Select From List By Label   id: PublishEvents  ${publish}
     Input Text    id: EventTypeCode    ${event}
     Click Confirm
@@ -275,7 +301,7 @@ Edit Stage
 Edit Activity
     [Arguments]  ${locator}  ${name}  ${publish}
     Item From Context Menu  ${locator}  Edit Activity
-    Select From List By Label   id: PublishEvents  ${publish}
+    Select From List By Label   id: EventTypeCode  ${publish}
     Input Text    id: ActivityName    ${name}
     Click Confirm
 
@@ -333,22 +359,22 @@ Add Property
     Click Save
     Sleep  1
 
+
 Cancel Property Changes
-    Click Button  class="md-ripple"
+    @{elems}=  Get Web Elements  //*[@class = "md-button md-fab md-fab-top-right md-mini cancelButton md-theme-default"]
+    Click Button  @{elems}[-1]
     Sleep  1
+
 
 Click Add
     Click Button  class: addBtn
     Sleep  1
 
+
 Click Save
     Click Button  xpath: //*[@class = "md-button md-dense md-raised md-primary md-theme-default"]
     Sleep  1
 
-Click Cancel
-    @{elems}=  Get Web Elements  //*[@class = "md-button md-fab md-fab-top-right md-mini cancelButton md-theme-default"]
-    Click Button  @{elems}[-1]
-    Sleep  1
 
 Open Form In Clarity
     [Arguments]   ${locator}
@@ -360,11 +386,13 @@ Open Form In Clarity
 Open Controls menu
     Click Element   xpath: //*[@class = "md-list-item app-form-controls-section"][2]
 
+
 Add Control Via Button
     [Arguments]  ${control_name}
     sleep  1
     Mouse Over     //*[text()="${control_name}"]/../..
     Click Element   //*[text()="${control_name}"]/following-sibling::span[@class = "add"]
+
 
 Add Control Template
     [Arguments]  ${name}  ${id}
@@ -372,15 +400,15 @@ Add Control Template
     Add Control Via Button  ${name}
     Element Should Be Visible   class: ${id}
 
+
 Remove Control
     [Arguments]  ${control}
     Mouse Over    xpath: //*[@class="${control}"]
     Click Button   xpath: //*[@class="${control}"]/descendant::button[@id= "deleteControlButton"]
 
+
 Reorder
-    [Arguments]  @{locator} ${target}
-   #    Mouse Down  @{locator}[0]
-   #    #Mouse Out   @{locator}[0]
-   #    #Mouse Over  @{locator}[1]
-   #    Mouse Up    @{locator}[1]
-    Drag And Drop  ${locator}  ${target}
+    [Arguments]  ${locator}  ${target}
+    Mouse Down  ${locator}
+    Mouse Over  ${target}
+    Mouse Up    ${target}
