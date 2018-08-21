@@ -22,6 +22,16 @@ ${rootnode}     xpath: //*[contains(@id, 'qId_/_')]
 
 
 *** Test Cases ***
+Test SDT Edit
+    [Documentation]  Should create a new SDT with the context menu from Root
+    [Tags]  SDT  Edit  succeed
+    Given Expand Node  @{staticbranch}[0]
+    And Element Should Be Visible  xpath: //*[text() = '@{edit_sdt}[0]']
+    When Edit SDT   xpath: //*[text() = '@{edit_sdt}[0]']  @{staticbranch}  TEST_EDIT  Edit Test
+    Then element should be visible  xpath: //*[text() = 'Edit Test']
+    And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  @{edit_sdt}[0]
+
+
 Test Add SDT Root  #Add SDT via root node
     [Documentation]  Should create a new SDT with the context menu from Root
     [Tags]  SDT  Add  succeed
@@ -30,16 +40,6 @@ Test Add SDT Root  #Add SDT via root node
     And Sleep    1
     Then Expand Node    @{testbranch}[0]
     And Element Should Be Visible   xpath: //*[text() = 'From Root']
-
-
-Test SDT Edit
-    [Documentation]  Should Rename SDT
-    [Tags]  SDT  Edit  succeed
-    Given Expand Node  @{staticbranch}[0]
-    And Element Should Be Visible  xpath: //*[text() = '@{edit_sdt}[0]']
-    When Edit SDT   xpath: //*[text() = '@{edit_sdt}[0]']  @{staticbranch}  TEST_EDIT  Edit Test
-    Then element should be visible  xpath: //*[text() = 'Edit Test']
-    And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  @{edit_sdt}[0]
 
 
 Test Remove SDT From Root  #Remove
@@ -120,8 +120,7 @@ Test Edit Activity
     [Tags]  Stage  Edit  succeed
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
-    Edit Activity   xpath: //*[text()="@{edit_sdt}[2]"]   Auto Activity    ALL
-    Edit Activity   xpath: //*[text()="Auto Activity"]   @{edit_sdt}[2]    NONE
+    Edit Activity   xpath: //*[text()="@{edit_sdt}[2]"]   event    ALL
 
 
 Test Remove Activity
@@ -140,6 +139,11 @@ Test Add Form
 Test Remove Form
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
+    @{n}=  Get WebElements  xpath: //*[contains(text(),'Questionnaire :')]
+    Log Many     @{n}
+    :FOR  ${form}  IN  @{n}
+    \  ${condition}=  Evaluate
+    \  Run Keyword If    ${condition}   Remove Form    ${form}
     ${form_name}=  Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
     Remove Form    ${form_name}
 
@@ -147,7 +151,7 @@ Test Remove Form
 Test Add Page
     Given Expand Node    @{staticbranch}[0]
     And Expand Node    @{edit_sdt}[0]
-    When Add Page In Unity    xpath: //*[contains(text(), "Questionnaire :")][last()]    Test_New_Page
+    When Add Page In Unity    xpath: //*[text() = '@{edit_sdt}[3]']    Test_New_Page
     Then Element Should Be Visible    xpath: //*[contains(text(),' : Test_New_Page')]
 
 
@@ -156,27 +160,22 @@ Test Edit Page
     [Tags]  Stage  Edit  succeed
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
-    Edit Page   xpath: //*[text()="@{edit_sdt}[4]"]   event
+    Edit Activity   xpath: //*[text()="@{edit_sdt}"]   event
 
 
 Open Clarity From Unity
-    [Tags]  
+    [Tags]
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
     ${form_name}=  Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
     Open Form In Clarity  xpath: //*[text()="${form_name}"]
 
-
 Add controls
     [Tags]
     [Template]  Add Control Template
+
     Alert  alert-control
     Data  data-control
-    External Link  externallink-control
-
-
-Reorder Controls
-    Reorder    xpath://* [@class="alert-control"]/*[@class= "vddl-handle handle"]  xpath: //*[@class = "externallink-control"]
 
 
 Remove Controls
@@ -185,6 +184,10 @@ Remove Controls
     alert-control
     data-control
     externallink-control
+
+
+Add Page in Clarity
+    Add Page in Clarity
 
 *** Keywords ***
 Expand Node      # Click on an element by its text
@@ -233,7 +236,7 @@ Fill Text Form  #takes list of feild ids and text values and inputs the text int
     \   input text  ${id}  ${value}
 
 
-Add SDT  #Takes a visable parent node name, a new SDT code and text and catagoties 1-5
+Add SDT  #
     [Arguments]  ${parent}  ${code}  ${text}  @{Catagories}
     Item From Context Menu  ${parent}  Add New Service Delivery Type
     input text  id: Category1   @{Catagories}[0]
@@ -250,34 +253,25 @@ Remove Node  # Generic Remove
     Item From Context Menu  ${node_name}  Remove ${type}
     Click Confirm
 
-
-Remove SDT  # Use the remove SDT option on a specified SDT
+Remove SDT
     [Arguments]  ${node_name}
     Item From Context Menu  ${node_name}  Remove
     Click Confirm
 
 
-Remove Stage  # Use the remove Stage option on a specified Stage
+Remove Stage
     [Arguments]  ${node_name}
     Remove Node  ${node_name}  Stage
 
 
-Remove Activity  # Use the remove Activity option on a specified Activity
+Remove Activity
     [Arguments]  ${node_name}
     Remove Node  ${node_name}  Activity
 
 
-Remove Form  # Use the remove Form option on a specified Form
+Remove Form
     [Arguments]  ${node_name}
-    Item From Context Menu  xpath: //*[text()= '${node_name}']  Remove Form
-    Click Confirm
-
-
-Remove All Forms   # Use the remove Form on all visable forms
-    @{n}=  Get WebElements  xpath: //*[contains(text(),'Questionnaire :')]
-    Log Many     @{n}
-    :FOR  ${form}  IN  @{n}
-    \  Remove Form    ${form}
+    Remove Node  ${node_name}  Form
 
 
 Edit SDT  #Open the edit menu for SDT make change and save
@@ -293,7 +287,7 @@ Edit SDT  #Open the edit menu for SDT make change and save
     Click Confirm
 
 
-Edit Stage  #Open the edit menu for Stage make change and save
+Edit Stage
     [Arguments]  ${locator}  ${event}  ${publish}
     Item From Context Menu  ${locator}  Edit Stage
     Select From List By Label   id: PublishEvents  ${publish}
@@ -301,15 +295,15 @@ Edit Stage  #Open the edit menu for Stage make change and save
     Click Confirm
 
 
-Edit Activity  #Open the edit menu for Activity make change and save. Takes Activity Locator, Event type and new Activity name
+Edit Activity
     [Arguments]  ${locator}  ${name}  ${publish}
     Item From Context Menu  ${locator}  Edit Activity
-    Input Text    id: EventTypeCode  ${publish}
+    Select From List By Label   id: PublishEvents  ${publish}
     Input Text    id: ActivityName    ${name}
     Click Confirm
 
 
-Edit Page  #Open the edit menu for Page make change and save. Takes Page Locator and new page name
+Edit Page
     [Arguments]  ${locator}  ${name}
     Item From Context Menu  ${locator}  Edit Page
     Input Text    id: PageName    ${name}
@@ -394,24 +388,17 @@ Add Control Via Button
     sleep  1
     Mouse Over     //*[text()="${control_name}"]/../..
     Click Element   //*[text()="${control_name}"]/following-sibling::span[@class = "add"]
-    Sleep  1
 
 Add Control Template
     [Arguments]  ${name}  ${id}
     Open Controls menu
     Add Control Via Button  ${name}
-    Element Should Be Visible   //*[contains(@class, "new-control")]/*[contains(@class, "${id}")]/..
+    Element Should Be Visible   class: ${id}
 
 Remove Control
-    [Arguments]  ${id}
-    Mouse Over    xpath: //*[contains(@class, "new-control")]/*[contains(@class, "${id}")]/..
-    Click Button   xpath: //*[contains(@class, '${id}')]/following-sibling::button[@id="deleteControlButton"]
-    Sleep    1
-
-Remove Control Template
-    [Arguments]   ${id}
-    Remove Control    ${id}
-    Element Should not Be Visible   xpath: //*[contains(@class, "new-control")]/*[contains(@class, "${id}")]/..
+    [Arguments]  ${control}
+    Mouse Over    xpath: //*[@class="${control}"]
+    Click Button   xpath: //*[@class="${control}"]/descendant::button[@id= "deleteControlButton"]
 
 Reorder
     [Arguments]  ${locator}  ${target}
@@ -420,3 +407,7 @@ Reorder
    #    #Mouse Over  @{locator}[1]
    #    Mouse Up    @{locator}[1]
     Drag And Drop  ${locator}  ${target}
+
+Add Page in Clarity
+    Click Button  class: button-add-page
+    Sleep  4
