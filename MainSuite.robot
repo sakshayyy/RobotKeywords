@@ -16,45 +16,12 @@ Test Teardown   Reload Page
 ${browser}      GoogleChrome
 ${rootnode}     xpath: //*[contains(@id, 'qId_/_')]
 @{staticbranch}  D o  Not  Alter  This  Branch
-@{edit_sdt}     EDIT  RIS  ActivityX  Questionnaire : 920501013  PageX
+@{edit_sdt}     EDIT  RIS  ActivityX  Questionnaire : 920501285  PageX
 @{testbranch}       Cat 1 - Auto   Cat 2 - Auto   Cat 3 - Auto  Cat 4 - Auto  Cat 5 - Auto
 
 
 
 *** Test Cases ***
-Test SDT Edit
-    [Documentation]  Should create a new SDT with the context menu from Root
-    [Tags]  SDT  Edit  succeed
-    Given Expand Node  @{staticbranch}[0]
-    And Element Should Be Visible  xpath: //*[text() = '@{edit_sdt}[0]']
-    When Edit SDT   xpath: //*[text() = '@{edit_sdt}[0]']  @{staticbranch}  TEST_EDIT  Edit Test
-    Then element should be visible  xpath: //*[text() = 'Edit Test']
-    And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  @{edit_sdt}[0]
-
-Test Edit Stage
-    [Documentation]  Should edit Stage values
-    [Tags]  Stage  Edit  succeed
-    Expand Node   @{staticbranch}[0]
-    Expand Node    @{edit_sdt}[0]
-    Edit Stage    xpath: //*[text()="@{edit_sdt}[1]"]   event    ALL
-    element should be visible  xpath: //*[text()="@{edit_sdt}[1]"]
-    Edit Stage    xpath: //*[text()="@{edit_sdt}[1]"]   Auto    NONE
-
-
-Test Edit Activity
-    [Documentation]  Should edit Stage values
-    [Tags]  Stage  Edit  succeed
-    Expand Node   @{staticbranch}[0]
-    Expand Node    @{edit_sdt}[0]
-    Edit Activity   xpath: //*[text()="@{edit_sdt}[2]"]   event    ALL
-
-Test Edit Page
-    [Documentation]  Should edit Stage values
-    [Tags]  Stage  Edit  succeed
-    Expand Node   @{staticbranch}[0]
-    Expand Node    @{edit_sdt}[0]
-    Edit Activity   xpath: //*[text()="@{edit_sdt}"]   event
-
 Test Add SDT Root  #Add SDT via root node
     [Documentation]  Should create a new SDT with the context menu from Root
     [Tags]  SDT  Add  succeed
@@ -85,6 +52,16 @@ Test Add SDT Cat 3  #Add SDT via specified cat 3 node
     And Element Should Be Visible   xpath: //*[text() = 'From Cat 3']
 
 
+Test Edit SDT
+    [Documentation]  Should create a new SDT with the context menu from Root
+    [Tags]  SDT  Edit  succeed
+    Given Expand Node  @{staticbranch}[0]
+    And Element Should Be Visible  xpath: //*[text() = '@{edit_sdt}[0]']
+    When Edit SDT   xpath: //*[text() = '@{edit_sdt}[0]']  @{staticbranch}  TEST_EDIT  Edit Test
+    Then element should be visible  xpath: //*[text() = 'Edit Test']
+    And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  @{edit_sdt}[0]
+
+
 Test Remove SDT  #
     #TODO - make less static
     [Documentation]  Should remove the SDT from "Add SDT Cat 3"
@@ -103,6 +80,17 @@ Test Add Stage  #Add New Stage
     When Add Stage    xpath: //*[text() = '@{edit_sdt}[0]']    test    @{stage_type}[3]  @{event_publish}[0]
     Then Element Should Be Visible  xpath: //*[text() = '@{stage_type}[3]']
 
+
+Test Edit Stage
+    [Documentation]  Should edit Stage values
+    [Tags]  Stage  Edit  succeed
+    Expand Node   @{staticbranch}[0]
+    Expand Node    @{edit_sdt}[0]
+    Edit Stage    xpath: //*[text()="@{edit_sdt}[1]"]   event    ALL
+    element should be visible  xpath: //*[text()="@{edit_sdt}[1]"]
+    Edit Stage    xpath: //*[text()="@{edit_sdt}[1]"]   Auto    NONE
+
+
 Test Remove Stage
     Given Expand Node   @{staticbranch}[0]
     And Expand Node    @{edit_sdt}[0]
@@ -117,6 +105,14 @@ Test Add Activity
     Then Element Should Be Visible  xpath: //*[text() = 'Auto Activity']
 
 
+Test Edit Activity
+    [Documentation]  Should edit Stage values
+    [Tags]  Stage  Edit  succeed
+    Expand Node   @{staticbranch}[0]
+    Expand Node    @{edit_sdt}[0]
+    Edit Activity   xpath: //*[text()="@{edit_sdt}[2]"]   event    ALL
+
+
 Test Remove Activity
     Given Expand Node   @{staticbranch}[0]
     And Expand Node    @{edit_sdt}[0]
@@ -129,7 +125,8 @@ Test Add Form
     And Expand Node    @{edit_sdt}[0]
     When Add Form    xpath: //*[text() = 'ActivityX']
 
-Test Remove Forms
+
+Test Remove Form
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
     @{n}=  Get WebElements  xpath: //*[contains(text(),'Questionnaire :')]
@@ -137,6 +134,21 @@ Test Remove Forms
     :FOR  ${form}  IN  @{n}
     \  ${condition}=  Evaluate
     \  Run Keyword If    ${condition}   Remove Form    ${form}
+    
+
+Test Add Page
+    Given Expand Node    @{staticbranch}[0]
+    And Expand Node    @{edit_sdt}[0]
+    When Add Page In Unity    xpath: //*[text() = '@{edit_sdt}[3]']    Test_New_Page
+    Then Element Should Be Visible    xpath: //*[contains(text(),' : Test_New_Page')]
+
+
+Test Edit Page
+    [Documentation]  Should edit Stage values
+    [Tags]  Stage  Edit  succeed
+    Expand Node   @{staticbranch}[0]
+    Expand Node    @{edit_sdt}[0]
+    Edit Activity   xpath: //*[text()="@{edit_sdt}"]   event
 
 
 Open Clarity From Unity
@@ -348,7 +360,7 @@ Open Form In Clarity
 
 
 Open Controls menu
-    Click Element   xpath: //*[@class = "md-list-item app-form-controls-section"][2]  
+    Click Element   xpath: //*[@class = "md-list-item app-form-controls-section"][2]
 
 Add Control Via Button
     [Arguments]  ${control_name}
