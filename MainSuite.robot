@@ -160,13 +160,15 @@ Test Edit Page
 
 
 Open Clarity From Unity
+    [Tags]  
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
-    Open Form In Clarity  xpath: //*[text()="Questionnaire : 920501285"]
-
+    ${form_name}=  Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
+    Open Form In Clarity  xpath: //*[text()="${form_name}"]
 
 
 Add controls
+    [Tags]
     [Template]  Add Control Template
     Alert  alert-control
     Data  data-control
@@ -178,6 +180,7 @@ Reorder Controls
 
 
 Remove Controls
+    [Tags]
     [Template]  Remove Control Template
     alert-control
     data-control
@@ -371,7 +374,7 @@ Click Save
     Click Button  xpath: //*[@class = "md-button md-dense md-raised md-primary md-theme-default"]
     Sleep  1
 
-Click Cancel
+Click Cancel Button
     @{elems}=  Get Web Elements  //*[@class = "md-button md-fab md-fab-top-right md-mini cancelButton md-theme-default"]
     Click Button  @{elems}[-1]
     Sleep  1
@@ -411,7 +414,7 @@ Remove Control Template
     Element Should not Be Visible   xpath: //*[contains(@class, "new-control")]/*[contains(@class, "${id}")]/..
 
 Reorder
-    [Arguments]  @{locator} ${target}
+    [Arguments]  ${locator}  ${target}
    #    Mouse Down  @{locator}[0]
    #    #Mouse Out   @{locator}[0]
    #    #Mouse Over  @{locator}[1]
