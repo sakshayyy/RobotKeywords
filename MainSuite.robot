@@ -22,44 +22,6 @@ ${rootnode}     xpath: //*[contains(@id, 'qId_/_')]
 
 
 *** Test Cases ***
-Test SDT Edit
-    [Documentation]  Should create a new SDT with the context menu from Root
-    [Tags]  SDT  Edit  succeed
-    Given Expand Node  @{staticbranch}[0]
-    And Element Should Be Visible  xpath: //*[text() = '@{edit_sdt}[0]']
-    When Edit SDT   xpath: //*[text() = '@{edit_sdt}[0]']  @{staticbranch}  TEST_EDIT  Edit Test
-    Then element should be visible  xpath: //*[text() = 'Edit Test']
-    And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  @{edit_sdt}[0]
-
-
-Test Edit Stage
-    [Documentation]  Should edit Stage values
-    [Tags]  Stage  Edit  succeed
-    Expand Node   @{staticbranch}[0]
-    Expand Node    @{edit_sdt}[0]
-    Edit Stage    xpath: //*[text()="@{edit_sdt}[1]"]   event    ALL
-    element should be visible  xpath: //*[text()="@{edit_sdt}[1]"]
-    Edit Stage    xpath: //*[text()="@{edit_sdt}[1]"]   Auto    NONE
-
-
-Test Edit Activity
-    [Documentation]  Should edit Stage values
-    [Tags]  Stage  Edit  succeed
-    Expand Node   @{staticbranch}[0]
-    Expand Node    @{edit_sdt}[0]
-    Edit Activity   xpath: //*[text()="@{edit_sdt}[2]"]   Event    ALL
-    Edit Activity   xpath: //*[text()="Event"]   @{edit_sdt}[2]    NONE
-
-
-Test Edit Page
-    [Documentation]  Should edit Stage values
-    [Tags]  Stage  Edit  succeed
-    Expand Node   @{staticbranch}[0]
-    Expand Node    @{edit_sdt}[0]
-    Edit Page    xpath: //*[text()="@{edit_sdt}[4]"]   Test
-    Edit Page    xpath: //*[text()="Test"]   @{edit_sdt}[4]
-
-
 Test Add SDT Root  #Add SDT via root node
     [Documentation]  Should create a new SDT with the context menu from Root
     [Tags]  SDT  Add  succeed
@@ -90,6 +52,16 @@ Test Add SDT Cat 3  #Add SDT via specified cat 3 node
     And Element Should Be Visible   xpath: //*[text() = 'From Cat 3']
 
 
+Test Edit SDT
+    [Documentation]  Should create a new SDT with the context menu from Root
+    [Tags]  SDT  Edit  succeed
+    Given Expand Node  @{staticbranch}[0]
+    And Element Should Be Visible  xpath: //*[text() = '@{edit_sdt}[0]']
+    When Edit SDT   xpath: //*[text() = '@{edit_sdt}[0]']  @{staticbranch}  TEST_EDIT  Edit Test
+    Then element should be visible  xpath: //*[text() = 'Edit Test']
+    And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  @{edit_sdt}[0]
+
+
 Test Remove SDT  #
     #TODO - make less static
     [Documentation]  Should remove the SDT from "Add SDT Cat 3"
@@ -109,6 +81,17 @@ Test Add Stage  #Add New Stage
     Then Element Should Be Visible  xpath: //*[text() = '@{stage_type}[3]']
 
 
+
+Test Edit Stage
+    [Documentation]  Should edit Stage values
+    [Tags]  Stage  Edit  succeed
+    Expand Node   @{staticbranch}[0]
+    Expand Node    @{edit_sdt}[0]
+    Edit Stage    xpath: //*[text()="@{edit_sdt}[1]"]   event    ALL
+    element should be visible  xpath: //*[text()="@{edit_sdt}[1]"]
+    Edit Stage    xpath: //*[text()="@{edit_sdt}[1]"]   Auto    NONE
+
+
 Test Remove Stage
     Given Expand Node   @{staticbranch}[0]
     And Expand Node    @{edit_sdt}[0]
@@ -121,6 +104,14 @@ Test Add Activity
     And Expand Node    @{edit_sdt}[0]
     When Add Activity  xpath: //*[text() = '@{edit_sdt}[1]']  Auto Activity  @{event_publish}[0]
     Then Element Should Be Visible  xpath: //*[text() = 'Auto Activity']
+
+
+Test Edit Activity
+    [Documentation]  Should edit Stage values
+    [Tags]  Stage  Edit  succeed
+    Expand Node   @{staticbranch}[0]
+    Expand Node    @{edit_sdt}[0]
+    Edit Activity   xpath: //*[text()="@{edit_sdt}[2]"]   event    ALL
 
 
 Test Remove Activity
@@ -141,6 +132,21 @@ Test Remove Form
     Expand Node    @{edit_sdt}[0]
     ${form_name}=  Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
     Remove Form    ${form_name}
+
+
+Test Add Page
+    Given Expand Node    @{staticbranch}[0]
+    And Expand Node    @{edit_sdt}[0]
+    When Add Page In Unity    xpath: //*[text() = '@{edit_sdt}[3]']    Test_New_Page
+    Then Element Should Be Visible    xpath: //*[contains(text(),' : Test_New_Page')]
+
+
+Test Edit Page
+    [Documentation]  Should edit Stage values
+    [Tags]  Stage  Edit  succeed
+    Expand Node   @{staticbranch}[0]
+    Expand Node    @{edit_sdt}[0]
+    Edit Activity   xpath: //*[text()="@{edit_sdt}"]   event
 
 
 Open Clarity From Unity
