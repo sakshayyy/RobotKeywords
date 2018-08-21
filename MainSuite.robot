@@ -16,7 +16,7 @@ Test Teardown   Reload Page
 ${browser}      GoogleChrome
 ${rootnode}     xpath: //*[contains(@id, 'qId_/_')]
 @{staticbranch}  D o  Not  Alter  This  Branch
-@{edit_sdt}     EDIT  RIS  ActivityX  Questionnaire : 920501013  New page
+@{edit_sdt}     EDIT  RIS  ActivityX  Questionnaire : 920501285  PageX
 @{testbranch}       Cat 1 - Auto   Cat 2 - Auto   Cat 3 - Auto  Cat 4 - Auto  Cat 5 - Auto
 
 
@@ -162,7 +162,8 @@ Test Edit Page
 Open Clarity From Unity
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
-    Open Form In Clarity  xpath: //*[contains(text(), "Questionnaire :")][1]
+    Open Form In Clarity  xpath: //*[text()="Questionnaire : 920501285"]
+
 
 
 Add controls
@@ -182,8 +183,6 @@ Remove Controls
     data-control
     externallink-control
 
-
-
 *** Keywords ***
 Expand Node      # Click on an element by its text
     [Arguments]  ${text}
@@ -196,7 +195,7 @@ Click Confirm   # Click the Save button at the bottom of Add, remove and edit pa
     Sleep   1
 
 
-Click Cancel Unity    # Click the cancel button at the bottom of Add, remove and edit panes
+Click Cancel    # Click the cancel button at the bottom of Add, remove and edit panes
     click button  class: btn-danger
     Sleep   1
 
@@ -204,7 +203,7 @@ Click Cancel Unity    # Click the cancel button at the bottom of Add, remove and
 Item From Context Menu  # Selects the action from the Context menu by text
     [Arguments]     ${locator}  ${action}
     Open Context Menu  ${locator}
-    Sleep    1
+    Sleep    0.1
     click element   xpath: //*[text()= '${action}']
     sleep  1
 
@@ -243,41 +242,39 @@ Add SDT  #Takes a visable parent node name, a new SDT code and text and catagoti
     input text  id: Text        ${text}
     Click Confirm
 
-
 Remove Node  # Generic Remove
     [Arguments]  ${node_name}  ${type}
     Item From Context Menu  ${node_name}  Remove ${type}
     Click Confirm
 
 
-Remove SDT
+Remove SDT  # Use the remove SDT option on a specified SDT
     [Arguments]  ${node_name}
     Item From Context Menu  ${node_name}  Remove
-    Click Confirm  # Use the remove SDT option on a specified SDT
+    Click Confirm
 
 
-Remove Stage
+Remove Stage  # Use the remove Stage option on a specified Stage
     [Arguments]  ${node_name}
-    Remove Node  ${node_name}  Stage  # Use the remove Stage option on a specified Stage
+    Remove Node  ${node_name}  Stage
 
 
-Remove Activity
+Remove Activity  # Use the remove Activity option on a specified Activity
     [Arguments]  ${node_name}
-    Remove Node  ${node_name}  Activity  # Use the remove Activity option on a specified Activity
+    Remove Node  ${node_name}  Activity
 
 
-Remove Form
+Remove Form  # Use the remove Form option on a specified Form
     [Arguments]  ${node_name}
     Item From Context Menu  xpath: //*[text()= '${node_name}']  Remove Form
-    Click Confirm  # Use the remove Form option on a specified Form
+    Click Confirm
 
 
-Remove All Forms
+Remove All Forms   # Use the remove Form on all visable forms
     @{n}=  Get WebElements  xpath: //*[contains(text(),'Questionnaire :')]
     Log Many     @{n}
     :FOR  ${form}  IN  @{n}
-    \  ${condition}=  Evaluate
-    \  Run Keyword If    ${condition}   Remove Form    ${form}  # Use the remove Form on all visable forms
+    \  Remove Form    ${form}
 
 
 Edit SDT  #Open the edit menu for SDT make change and save
@@ -295,7 +292,7 @@ Edit SDT  #Open the edit menu for SDT make change and save
 
 Edit Stage  #Open the edit menu for Stage make change and save
     [Arguments]  ${locator}  ${event}  ${publish}
-    Item From Context Menu    ${locator}    Edit Stage
+    Item From Context Menu  ${locator}  Edit Stage
     Select From List By Label   id: PublishEvents  ${publish}
     Input Text    id: EventTypeCode    ${event}
     Click Confirm
@@ -362,22 +359,22 @@ Add Property
     Click Save
     Sleep  1
 
-
 Cancel Property Changes
-    @{elems}=  Get Web Elements  //*[@class = "md-button md-fab md-fab-top-right md-mini cancelButton md-theme-default"]
-    Click Button  @{elems}[-1]
+    Click Button  class="md-ripple"
     Sleep  1
-
 
 Click Add
     Click Button  class: addBtn
     Sleep  1
 
-
 Click Save
     Click Button  xpath: //*[@class = "md-button md-dense md-raised md-primary md-theme-default"]
     Sleep  1
 
+Click Cancel
+    @{elems}=  Get Web Elements  //*[@class = "md-button md-fab md-fab-top-right md-mini cancelButton md-theme-default"]
+    Click Button  @{elems}[-1]
+    Sleep  1
 
 Open Form In Clarity
     [Arguments]   ${locator}
@@ -389,7 +386,6 @@ Open Form In Clarity
 Open Controls menu
     Click Element   xpath: //*[@class = "md-list-item app-form-controls-section"][2]
 
-
 Add Control Via Button
     [Arguments]  ${control_name}
     sleep  1
@@ -397,13 +393,11 @@ Add Control Via Button
     Click Element   //*[text()="${control_name}"]/following-sibling::span[@class = "add"]
     Sleep  1
 
-
 Add Control Template
     [Arguments]  ${name}  ${id}
     Open Controls menu
     Add Control Via Button  ${name}
     Element Should Be Visible   //*[contains(@class, "new-control")]/*[contains(@class, "${id}")]/..
-
 
 Remove Control
     [Arguments]  ${id}
@@ -417,7 +411,9 @@ Remove Control Template
     Element Should not Be Visible   xpath: //*[contains(@class, "new-control")]/*[contains(@class, "${id}")]/..
 
 Reorder
-    [Arguments]  ${locator}  ${target}
-    Mouse Down  ${locator}
-    Mouse Over  ${target}
-    Mouse Up    ${target}
+    [Arguments]  @{locator} ${target}
+   #    Mouse Down  @{locator}[0]
+   #    #Mouse Out   @{locator}[0]
+   #    #Mouse Over  @{locator}[1]
+   #    Mouse Up    @{locator}[1]
+    Drag And Drop  ${locator}  ${target}
