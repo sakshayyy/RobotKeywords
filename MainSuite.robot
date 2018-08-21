@@ -22,6 +22,16 @@ ${rootnode}     xpath: //*[contains(@id, 'qId_/_')]
 
 
 *** Test Cases ***
+Test SDT Edit
+    [Documentation]  Should create a new SDT with the context menu from Root
+    [Tags]  SDT  Edit  succeed
+    Given Expand Node  @{staticbranch}[0]
+    And Element Should Be Visible  xpath: //*[text() = '@{edit_sdt}[0]']
+    When Edit SDT   xpath: //*[text() = '@{edit_sdt}[0]']  @{staticbranch}  TEST_EDIT  Edit Test
+    Then element should be visible  xpath: //*[text() = 'Edit Test']
+    And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  @{edit_sdt}[0]
+
+
 Test Add SDT Root  #Add SDT via root node
     [Documentation]  Should create a new SDT with the context menu from Root
     [Tags]  SDT  Add  succeed
@@ -129,11 +139,16 @@ Test Add Form
 Test Remove Form
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
+<<<<<<< HEAD
     @{n}=  Get WebElements  xpath: //*[contains(text(),'Questionnaire :')]
     Log Many     @{n}
     :FOR  ${form}  IN  @{n}
     \  ${condition}=  Evaluate
     \  Run Keyword If    ${condition}   Remove Form    ${form}
+=======
+    ${form_name}=  Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
+    Remove Form    ${form_name}
+>>>>>>> 39485252608452967100a118769d201b8f212f3b
 
 
 Test Add Page
@@ -158,7 +173,11 @@ Open Clarity From Unity
 
 
 Add controls
+<<<<<<< HEAD
     [Template]  Add Control Templates
+=======
+    [Template]  Add Control Template
+>>>>>>> 39485252608452967100a118769d201b8f212f3b
     Alert  alert-control
     Data  data-control
     [Teardown]  Close Browser
