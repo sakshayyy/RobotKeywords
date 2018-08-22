@@ -16,7 +16,7 @@ Test Teardown   Reload Page
 ${browser}      GoogleChrome
 ${rootnode}     xpath: //*[contains(@id, 'qId_/_')]
 @{staticbranch}  D o  Not  Alter  This  Branch
-@{edit_sdt}     EDIT  RIS  ActivityX  Questionnaire : 920501285  PageX
+@{edit_sdt}     EDIT  RIS  ActivityX  Questionnaire : 920501285  New page
 @{testbranch}       Cat 1 - Auto   Cat 2 - Auto   Cat 3 - Auto  Cat 4 - Auto  Cat 5 - Auto
 
 
@@ -59,6 +59,7 @@ Test Add SDT Cat 3  #Add SDT via specified cat 3 node
     Given Expand Node  @{staticbranch}[0]  #Name of parent node
     When Add SDT       xpath: //*[text() = 'Alter']  AUTO_GEN_SDT_CAT3  From Cat 3  @{testbranch}
     Then Expand Node    @{testbranch}[0]
+    And Expand Node  @{staticbranch}[0]
     And Element Should Be Visible   xpath: //*[text() = 'From Cat 3']
 
 
@@ -120,7 +121,8 @@ Test Edit Activity
     [Tags]  Stage  Edit  succeed
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
-    Edit Activity   xpath: //*[text()="@{edit_sdt}[2]"]   event    ALL
+    Edit Activity   xpath: //*[text()="Auto Activity"]   event    ALL
+    Edit Activity   xpath: //*[text()="event"]   Auto Activity    ALL
 
 
 Test Remove Activity
@@ -139,19 +141,15 @@ Test Add Form
 Test Remove Form
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
-    @{n}=  Get WebElements  xpath: //*[contains(text(),'Questionnaire :')]
-    Log Many     @{n}
-    :FOR  ${form}  IN  @{n}
-    \  ${condition}=  Evaluate
-    \  Run Keyword If    ${condition}   Remove Form    ${form}
-    ${form_name}=  Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
+    ${form_name}=   Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
     Remove Form    ${form_name}
 
 
 Test Add Page
     Given Expand Node    @{staticbranch}[0]
     And Expand Node    @{edit_sdt}[0]
-    When Add Page In Unity    xpath: //*[text() = '@{edit_sdt}[3]']    Test_New_Page
+    ${form_name}=   Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
+    When Add Page In Unity    xpath: //*[text() = '${form_name}']    Test_New_Page
     Then Element Should Be Visible    xpath: //*[contains(text(),' : Test_New_Page')]
 
 
@@ -160,33 +158,59 @@ Test Edit Page
     [Tags]  Stage  Edit  succeed
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
-    Edit Activity   xpath: //*[text()="@{edit_sdt}"]   event
+    Edit Page  xpath: //*[text()="@{edit_sdt}"]   event
 
 
 Open Clarity From Unity
+    [Tags]  Clarity
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
-    Open Form In Clarity  xpath: //*[text()="Questionnaire : 920501285"]
+    ${form_name}=  Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
+    Open Form In Clarity  xpath: //*[text()="${form_name}"]
 
 
 Add controls
-<<<<<<< HEAD
-    [Template]  Add Control Templates
-=======
+    [Tags]  Clarity
     [Template]  Add Control Template
->>>>>>> 39485252608452967100a118769d201b8f212f3b
     Alert  alert-control
     Data  data-control
-    [Teardown]  Close Browser
+    External Link  externallink-control
 
-#Remove Controls
-Test 1
-    Open Browser    http://pcm-dev1-1163553704.eu-west-2.elb.amazonaws.com/clarity/#/forms/920501285?serviceDeliveryTypeCode=EDIT&stageName=RIS&activityName=ActivityX
-    Remove Control    data-control
+
+Reorder controls
+    [Tags]  Clarity
+    [Template]  Reorder
+    alert-control  data-control
+    data-control  externallink-control
+    externallink-control  alert-control
+
+
+Remove Controls
+    [Tags]  Clarity
+    [Template]  Remove Control
+    alert-control
+    data-control
+    externallink-control
 
 
 Add Page in Clarity
-    Add Page in Clarity 
+    [Tags]  Clarity
+    ${pages_before}=  Get Element Count    //*[contains(@class,"md-button md-theme-default")]
+    Add Page in Clarity
+    ${pages_after}=  Get Element Count    //*[contains(@class,"md-button md-theme-default")]
+    ${cond}=  Evaluate    !(${pages_before}<${pages_after})
+    Run Keyword If   ${cond}   Fail  Page not added.
+
+
+Delete Page in Clarity
+    [Tags]  Clarity
+    ${page_count1} = Get Element Count  class: md-button md-theme-default
+    Element Should Be Visible    class: button-delete-page
+    Delete Page in Clarity
+    ${page_count2} = Get Element Count  class: md-button md-theme-default
+    ${cond2} = Evaluate    !(${page_count1} > ${page_count2})
+    Run Keyword If    ${cond2}    Fail  Page not deleted.
+
 
 *** Keywords ***
 Expand Node      # Click on an element by its text
@@ -270,7 +294,8 @@ Remove Activity
 
 Remove Form
     [Arguments]  ${node_name}
-    Remove Node  ${node_name}  Form
+    Item From Context Menu  ${node_name}  Remove Form
+    Click Confirm
 
 
 Edit SDT  #Open the edit menu for SDT make change and save
@@ -297,7 +322,7 @@ Edit Stage
 Edit Activity
     [Arguments]  ${locator}  ${name}  ${publish}
     Item From Context Menu  ${locator}  Edit Activity
-    Select From List By Label   id: PublishEvents  ${publish}
+    Input Text    id: EventTypeCode  ${publish}
     Input Text    id: ActivityName    ${name}
     Click Confirm
 
@@ -306,6 +331,7 @@ Edit Page
     [Arguments]  ${locator}  ${name}
     Item From Context Menu  ${locator}  Edit Page
     Input Text    id: PageName    ${name}
+    Click Confirm
 
 
 Add Stage  #Add Stage. Takes SDT node, Event type and 2 drop down indexes
@@ -367,7 +393,7 @@ Click Save
     Click Button  xpath: //*[@class = "md-button md-dense md-raised md-primary md-theme-default"]
     Sleep  1
 
-Click Cancel
+Click Cancel Button
     @{elems}=  Get Web Elements  //*[@class = "md-button md-fab md-fab-top-right md-mini cancelButton md-theme-default"]
     Click Button  @{elems}[-1]
     Sleep  1
@@ -397,16 +423,40 @@ Add Control Template
 Remove Control
     [Arguments]  ${control}
     Mouse Over    xpath: //*[@class="${control}"]
-    Click Button   xpath: //*[@class="${control}"]/descendant::button[@id= "deleteControlButton"]
+    Click Button   xpath: //*[@class="${control}"]/following-sibling::button[@id= "deleteControlButton"]
+
 
 Reorder
-    [Arguments]  @{locator}  ${target}
-   #    Mouse Down  @{locator}[0]
-   #    #Mouse Out   @{locator}[0]
-   #    #Mouse Over  @{locator}[1]
-   #    Mouse Up    @{locator}[1]
-    Drag And Drop  ${locator}  ${target}
+    [Arguments]  ${locator}  ${target}
+    Mouse Down  xpath: //*[@class='${locator}']/*[@class="vddl-handle handle"]
+    Mouse Over  xpath: //*[@class='${target}']/..
+    Sleep  2
+    Mouse Up    xpath: //*[@class='${target}']/..
+
 
 Add Page in Clarity
     Click Button  class: button-add-page
+    Sleep  4
+
+Delete Page in Clarity
+    Click Button  class: button-delete-page
+    Sleep  4
+
+Compressed View
+    Click Button  class: button-compressedmode
+    Sleep  4
+
+Ordered View
+    Click Button  class: button-displayorder
+    Sleep  4
+
+Toolbar Edit
+    Click Button  class: fa fa-edit
+    Sleep  4
+
+Toolbar Questions
+
+
+Toolbar Preview
+    Click Button  class: fa fa-eye
     Sleep  4
