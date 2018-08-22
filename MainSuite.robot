@@ -1,4 +1,4 @@
-*** Settings ***
+  *** Settings ***
 Library  SeleniumLibrary
 #Library   PythonKeywords.py
 Force Tags  Unity
