@@ -1,17 +1,12 @@
   *** Settings ***
 Library  SeleniumLibrary
 #Library   PythonKeywords.py
-
 Force Tags  Unity
-
 Suite Setup  Run Keywords  Open Browser  ${page}  ${browser}
 ...             AND           maximize browser window
 #...             AND           Set Selenium Speed  0.1
-
 Suite Teardown  Close Browser
-
 Test Setup      Sleep         2
-
 Test Teardown   Reload Page
 
 
@@ -21,7 +16,7 @@ Test Teardown   Reload Page
 ${browser}      GoogleChrome
 ${rootnode}     xpath: //*[contains(@id, 'qId_/_')]
 @{staticbranch}  D o  Not  Alter  This  Branch
-@{edit_sdt}     EDIT  RIS  ActivityX  Questionnaire : 920501013  PageX
+@{edit_sdt}     EDIT  RIS  ActivityX  Questionnaire : 920501285  PageX
 @{testbranch}       Cat 1 - Auto   Cat 2 - Auto   Cat 3 - Auto  Cat 4 - Auto  Cat 5 - Auto
 
 
@@ -35,24 +30,6 @@ Test SDT Edit
     When Edit SDT   xpath: //*[text() = '@{edit_sdt}[0]']  @{staticbranch}  TEST_EDIT  Edit Test
     Then element should be visible  xpath: //*[text() = 'Edit Test']
     And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  @{edit_sdt}[0]
-
-Test Edit Stage
-    [Documentation]  Should edit Stage values
-    [Tags]  Stage  Edit  succeed
-    Expand Node   @{staticbranch}[0]
-    Expand Node    @{edit_sdt}[0]
-    Edit Stage    xpath: //*[text()="@{edit_sdt}[1]"]   event    ALL
-    element should be visible  xpath: //*[text()="@{edit_sdt}[1]"]
-    Edit Stage    xpath: //*[text()="@{edit_sdt}[1]"]   Auto    NONE
-
-
-Test Edit Activity
-    [Documentation]  Should edit Stage values
-    [Tags]  Stage  Edit  succeed
-    Expand Node   @{staticbranch}[0]
-    Expand Node    @{edit_sdt}[0]
-    Edit Activity   xpath: //*[text()="@{edit_sdt}[2]"]   event    ALL
-
 
 
 Test Add SDT Root  #Add SDT via root node
@@ -85,6 +62,16 @@ Test Add SDT Cat 3  #Add SDT via specified cat 3 node
     And Element Should Be Visible   xpath: //*[text() = 'From Cat 3']
 
 
+Test Edit SDT
+    [Documentation]  Should create a new SDT with the context menu from Root
+    [Tags]  SDT  Edit  succeed
+    Given Expand Node  @{staticbranch}[0]
+    And Element Should Be Visible  xpath: //*[text() = '@{edit_sdt}[0]']
+    When Edit SDT   xpath: //*[text() = '@{edit_sdt}[0]']  @{staticbranch}  TEST_EDIT  Edit Test
+    Then element should be visible  xpath: //*[text() = 'Edit Test']
+    And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  @{edit_sdt}[0]
+
+
 Test Remove SDT  #
     #TODO - make less static
     [Documentation]  Should remove the SDT from "Add SDT Cat 3"
@@ -103,6 +90,17 @@ Test Add Stage  #Add New Stage
     When Add Stage    xpath: //*[text() = '@{edit_sdt}[0]']    test    @{stage_type}[3]  @{event_publish}[0]
     Then Element Should Be Visible  xpath: //*[text() = '@{stage_type}[3]']
 
+
+Test Edit Stage
+    [Documentation]  Should edit Stage values
+    [Tags]  Stage  Edit  succeed
+    Expand Node   @{staticbranch}[0]
+    Expand Node    @{edit_sdt}[0]
+    Edit Stage    xpath: //*[text()="@{edit_sdt}[1]"]   event    ALL
+    element should be visible  xpath: //*[text()="@{edit_sdt}[1]"]
+    Edit Stage    xpath: //*[text()="@{edit_sdt}[1]"]   Auto    NONE
+
+
 Test Remove Stage
     Given Expand Node   @{staticbranch}[0]
     And Expand Node    @{edit_sdt}[0]
@@ -117,6 +115,14 @@ Test Add Activity
     Then Element Should Be Visible  xpath: //*[text() = 'Auto Activity']
 
 
+Test Edit Activity
+    [Documentation]  Should edit Stage values
+    [Tags]  Stage  Edit  succeed
+    Expand Node   @{staticbranch}[0]
+    Expand Node    @{edit_sdt}[0]
+    Edit Activity   xpath: //*[text()="@{edit_sdt}[2]"]   event    ALL
+
+
 Test Remove Activity
     Given Expand Node   @{staticbranch}[0]
     And Expand Node    @{edit_sdt}[0]
@@ -129,14 +135,59 @@ Test Add Form
     And Expand Node    @{edit_sdt}[0]
     When Add Form    xpath: //*[text() = 'ActivityX']
 
+
 Test Remove Form
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
     @{n}=  Get WebElements  xpath: //*[contains(text(),'Questionnaire :')]
     Log Many     @{n}
     :FOR  ${form}  IN  @{n}
-    \  Remove Form    ${form}
+    \  ${condition}=  Evaluate
+    \  Run Keyword If    ${condition}   Remove Form    ${form}
+    ${form_name}=  Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
+    Remove Form    ${form_name}
 
+
+Test Add Page
+    Given Expand Node    @{staticbranch}[0]
+    And Expand Node    @{edit_sdt}[0]
+    When Add Page In Unity    xpath: //*[text() = '@{edit_sdt}[3]']    Test_New_Page
+    Then Element Should Be Visible    xpath: //*[contains(text(),' : Test_New_Page')]
+
+
+Test Edit Page
+    [Documentation]  Should edit Stage values
+    [Tags]  Stage  Edit  succeed
+    Expand Node   @{staticbranch}[0]
+    Expand Node    @{edit_sdt}[0]
+    Edit Activity   xpath: //*[text()="@{edit_sdt}"]   event
+
+
+Open Clarity From Unity
+    [Tags]
+    Expand Node   @{staticbranch}[0]
+    Expand Node    @{edit_sdt}[0]
+    ${form_name}=  Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
+    Open Form In Clarity  xpath: //*[text()="${form_name}"]
+
+Add controls
+    [Tags]
+    [Template]  Add Control Template
+
+    Alert  alert-control
+    Data  data-control
+
+
+Remove Controls
+    [Tags]
+    [Template]  Remove Control Template
+    alert-control
+    data-control
+    externallink-control
+
+
+Add Page in Clarity
+    Add Page in Clarity
 
 *** Keywords ***
 Expand Node      # Click on an element by its text
@@ -148,6 +199,7 @@ Expand Node      # Click on an element by its text
 Click Confirm   # Click the Save button at the bottom of Add, remove and edit panes
     click button  class: btn-success
     Sleep   1
+
 
 Click Cancel    # Click the cancel button at the bottom of Add, remove and edit panes
     click button  class: btn-danger
@@ -251,6 +303,12 @@ Edit Activity
     Click Confirm
 
 
+Edit Page
+    [Arguments]  ${locator}  ${name}
+    Item From Context Menu  ${locator}  Edit Page
+    Input Text    id: PageName    ${name}
+
+
 Add Stage  #Add Stage. Takes SDT node, Event type and 2 drop down indexes
     #TODO
     [Arguments]  ${locator}  ${event}  @{selections}
@@ -287,25 +345,69 @@ Add Page In Unity
 
 Open Properties Manager
     [Arguments]  ${locator}
-    Item From Context Menu  ${locator}  Edit Properties
+    Item From Context Menu  ${locator}  Manage Properties
 
 
 Add Property
-    [Arguments]  ${locator}  ${text}  ${text}
+    [Arguments]   ${text}  ${text}
     Click Add
-    Input Text    id: md-input-atlvwrv0e
-    Input Text    id: md-input-ieai6brs
+    Input Text    xpath:(//*[@class='md-input'])[1]  ${text}
+    Input Text    xpath:(//*[@class='md-input'])[2]  ${text}
     Click Save
     Sleep  1
 
 Cancel Property Changes
-    Click Button class: md-icon md-icon-font md-theme-default
+    Click Button  class="md-ripple"
     Sleep  1
 
 Click Add
-    Click Button  xpath://*[text()="Add"]
+    Click Button  class: addBtn
     Sleep  1
 
 Click Save
-    Click Button  xpath: //*[text()="Save"]
+    Click Button  xpath: //*[@class = "md-button md-dense md-raised md-primary md-theme-default"]
     Sleep  1
+
+Click Cancel Button
+    @{elems}=  Get Web Elements  //*[@class = "md-button md-fab md-fab-top-right md-mini cancelButton md-theme-default"]
+    Click Button  @{elems}[-1]
+    Sleep  1
+
+Open Form In Clarity
+    [Arguments]   ${locator}
+    Item From Context Menu    ${locator}    Edit in Clarity
+    @{windows}=  Get Window Handles
+    Select Window  @{windows}[-1]
+
+
+Open Controls menu
+    Click Element   xpath: //*[@class = "md-list-item app-form-controls-section"][2]
+
+Add Control Via Button
+    [Arguments]  ${control_name}
+    sleep  1
+    Mouse Over     //*[text()="${control_name}"]/../..
+    Click Element   //*[text()="${control_name}"]/following-sibling::span[@class = "add"]
+
+Add Control Template
+    [Arguments]  ${name}  ${id}
+    Open Controls menu
+    Add Control Via Button  ${name}
+    Element Should Be Visible   class: ${id}
+
+Remove Control
+    [Arguments]  ${control}
+    Mouse Over    xpath: //*[@class="${control}"]
+    Click Button   xpath: //*[@class="${control}"]/descendant::button[@id= "deleteControlButton"]
+
+Reorder
+    [Arguments]  ${locator}  ${target}
+   #    Mouse Down  @{locator}[0]
+   #    #Mouse Out   @{locator}[0]
+   #    #Mouse Over  @{locator}[1]
+   #    Mouse Up    @{locator}[1]
+    Drag And Drop  ${locator}  ${target}
+
+Add Page in Clarity
+    Click Button  class: button-add-page
+    Sleep  4
