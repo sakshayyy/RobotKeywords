@@ -1,4 +1,4 @@
-*** Settings ***
+  *** Settings ***
 Library  SeleniumLibrary
 #Library   PythonKeywords.py
 Force Tags  Unity
@@ -162,11 +162,16 @@ Test Edit Page
 
 
 Open Clarity From Unity
+<<<<<<< HEAD
     [Tags]  Clarity
+=======
+    [Tags]
+>>>>>>> 25d50ced3685a71a0ab68db64ce2f5cb73afc1b9
     Expand Node   @{staticbranch}[0]
     Expand Node    @{edit_sdt}[0]
     ${form_name}=  Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
     Open Form In Clarity  xpath: //*[text()="${form_name}"]
+<<<<<<< HEAD
 
 
 Add controls
@@ -188,12 +193,27 @@ Reorder controls
 Remove Controls
     [Tags]  Clarity
     [Template]  Remove Control
+=======
+
+Add controls
+    [Tags]
+    [Template]  Add Control Template
+
+    Alert  alert-control
+    Data  data-control
+
+
+Remove Controls
+    [Tags]
+    [Template]  Remove Control Template
+>>>>>>> 25d50ced3685a71a0ab68db64ce2f5cb73afc1b9
     alert-control
     data-control
     externallink-control
 
 
 Add Page in Clarity
+<<<<<<< HEAD
     [Tags]  Clarity
     ${pages_before}=  Get Element Count    //*[contains(@class,"md-button md-theme-default")]
     Add Page in Clarity
@@ -211,6 +231,9 @@ Delete Page in Clarity
     ${cond2} = Evaluate    !(${page_count1} > ${page_count2})
     Run Keyword If    ${cond2}    Fail  Page not deleted.
 
+=======
+    Add Page in Clarity
+>>>>>>> 25d50ced3685a71a0ab68db64ce2f5cb73afc1b9
 
 *** Keywords ***
 Expand Node      # Click on an element by its text
@@ -428,6 +451,7 @@ Remove Control
 
 Reorder
     [Arguments]  ${locator}  ${target}
+<<<<<<< HEAD
     Mouse Down  xpath: //*[@class='${locator}']/*[@class="vddl-handle handle"]
     Mouse Over  xpath: //*[@class='${target}']/..
     Sleep  2
@@ -460,3 +484,14 @@ Toolbar Questions
 Toolbar Preview
     Click Button  class: fa fa-eye
     Sleep  4
+=======
+   #    Mouse Down  @{locator}[0]
+   #    #Mouse Out   @{locator}[0]
+   #    #Mouse Over  @{locator}[1]
+   #    Mouse Up    @{locator}[1]
+    Drag And Drop  ${locator}  ${target}
+
+Add Page in Clarity
+    Click Button  class: button-add-page
+    Sleep  4
+>>>>>>> 25d50ced3685a71a0ab68db64ce2f5cb73afc1b9
