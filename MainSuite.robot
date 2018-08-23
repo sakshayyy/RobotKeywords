@@ -179,17 +179,13 @@ Add controls
     [Tags]  Clarity
     [Template]  Add Control Template
     Alert  alert-control
-    Block  data-control
     Data  data-control
     External Link  externallink-control
     File upload  fileupload-control
     Internal Link  internallink-control
     Key Value List  labelwithtext-control
-    Label  labelwithtext-control
-    Label With Text  labelwithtext-control
     Review Card  reviewcard-control
     Rich Message  richmessage-control
-    Rich Message Inversed  labelwithtext-control
     Separator  separator-control
     Spacer  spacer-control
 
@@ -241,11 +237,8 @@ Remove Controls
     fileupload-control
     internallink-control
     labelwithtext-control
-    labelwithtext-control
-    labelwithtext-control
     reviewcard-control
     richmessage-control
-    labelwithtext-control
     separator-control
     spacer-control
 
@@ -485,8 +478,9 @@ Add Control Template
 Remove Control
     [Arguments]  ${control}
     Mouse Over    xpath: //*[@class="${control}"]
+    Wait Until Element Is Visible    xpath: //*[@class="${control}"]/following-sibling::button[@id= "deleteControlButton"]
     Click Button   xpath: //*[@class="${control}"]/following-sibling::button[@id= "deleteControlButton"]
-    Sleep    0.1
+    Sleep    1
 
 
 Reorder
