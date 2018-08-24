@@ -193,7 +193,7 @@ Remove Controls
     externallink-control
 
 
-Add Page in Clarity
+Test Add Page in Clarity
     [Tags]  Clarity
     ${pages_before}=  Get Element Count    //*[contains(@class,"md-button md-theme-default")]
     Add Page in Clarity
@@ -202,7 +202,7 @@ Add Page in Clarity
     Run Keyword If   ${cond}   Fail  Page not added.
 
 
-Delete Page in Clarity
+Test Delete Page in Clarity
     [Tags]  Clarity
     ${page_count1}=  Get Element Count  xpath: //*[@class="md-button md-theme-default"]
     Element Should Be Visible    class: button-delete-page
@@ -211,6 +211,18 @@ Delete Page in Clarity
     ${cond}=  Evaluate    (${page_count1}+0)<=${page_count2}
     Run Keyword If    ${cond}    Fail  Page not deleted.
 
+#Test Compressed View
+    [Tags]  Clarity
+    Element Should Be Visible    class: button-compressmode
+    Compressed View
+    ${list_size1} = Get Element Size    class: vddl-list
+
+
+Test Ordered View
+    [Tags]  Clarity
+    Element Should Not Be Visible   class: displayOrder
+    Ordered View
+    Element Should Be Visible       class: displayOrder
 
 *** Keywords ***
 Expand Node      # Click on an element by its text
