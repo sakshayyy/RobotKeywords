@@ -173,6 +173,8 @@ Open Clarity From Unity
     Expand Node    @{edit_sdt}[0]
     ${form_name}=  Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
     Open Form In Clarity  xpath: //*[text()="${form_name}"]
+    ${title}=  Get Title
+    Should Start With    ${title}   Clarity - Forms :
 
 
 Add controls
@@ -232,7 +234,6 @@ Remove Controls
     [Template]  Remove Control
     alert-control
     data-control
-    data-control
     externallink-control
     fileupload-control
     internallink-control
@@ -260,6 +261,13 @@ Delete Page in Clarity
     Fail If  ${page_count1}+0<=${page_count2}  Page not deleted.
 
 
+Open Quesestion Editor
+    [Tags] Clarity QEdit
+    Click Question Editor Button
+    Title Should Be    Clarity - Questions
+
+
+Add Reference Question
 
 
 *** Keywords ***
@@ -436,22 +444,27 @@ Add Property
     Click Save
     Sleep  1
 
+
 Cancel Property Changes
     Click Button  class="md-ripple"
     Sleep  1
+
 
 Click Add
     Click Button  class: addBtn
     Sleep  1
 
+
 Click Save
     Click Button  xpath: //*[@class = "md-button md-dense md-raised md-primary md-theme-default"]
     Sleep  1
+
 
 Click Cancel Button
     @{elems}=  Get Web Elements  //*[@class = "md-button md-fab md-fab-top-right md-mini cancelButton md-theme-default"]
     Click Button  @{elems}[-1]
     Sleep  1
+
 
 Open Form In Clarity
     [Arguments]   ${locator}
@@ -463,17 +476,20 @@ Open Form In Clarity
 Open Controls menu
     Click Element   xpath: //*[@class = "md-list-item app-form-controls-section"][2]
 
+
 Add Control Via Button
     [Arguments]  ${control_name}
     sleep  1
     Mouse Over     //*[text()="${control_name}"]/../..
     Click Element   //*[text()="${control_name}"]/following-sibling::span[@class = "add"]
 
+
 Add Control Template
     [Arguments]  ${name}  ${id}
     Open Controls menu
     Add Control Via Button  ${name}
     Wait Until Element Is Visible   //*[contains(@class,"${id}")]
+
 
 Remove Control
     [Arguments]  ${control}
@@ -497,26 +513,37 @@ Add Page in Clarity
     Click Button  class: button-add-page
     Sleep  1
 
+
 Delete Page in Clarity
     Click Button  class: button-delete-page
     Sleep  1
+
 
 Toggle Compressed View
     Click Button  class: button-compressedmode
     Sleep  1
 
+
 Toggle Ordered View
     Click Button  class: button-displayorder
     Sleep  1
+
 
 Open Control Editor
     Click Button  class: fa fa-edit
     Sleep  1
 
-Open Question Editor
+Click Question Editor Button
     Click Button    xpath: //*[@href="#/questions"]
 
 
 Verity Preview From Clarity
     Click Button  class: fa fa-eye
     Sleep  1
+
+Click New Question
+    Click Element    id: newQuestionButton
+
+
+Add New Reference Question
+    Click New Question
