@@ -173,6 +173,8 @@ Open Clarity From Unity
     Expand Node    @{edit_sdt}[0]
     ${form_name}=  Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
     Open Form In Clarity  xpath: //*[text()="${form_name}"]
+    ${title}=  Get Title
+    Should Start With    ${title}   Clarity - Forms :
 
 
 Add controls
@@ -232,7 +234,6 @@ Remove Controls
     [Template]  Remove Control
     alert-control
     data-control
-    data-control
     externallink-control
     fileupload-control
     internallink-control
@@ -260,6 +261,13 @@ Delete Page in Clarity
     Fail If  ${page_count1}+0<=${page_count2}  Page not deleted.
 
 
+Open Quesestion Editor
+    [Tags] Clarity QEdit
+    Click Question Editor Button
+    Title Should Be    Clarity - Questions
+
+
+Add Reference Question
 
 
 *** Keywords ***
@@ -513,10 +521,17 @@ Open Control Editor
     Click Button  class: fa fa-edit
     Sleep  1
 
-Open Question Editor
+Click Question Editor Button
     Click Button    xpath: //*[@href="#/questions"]
 
 
 Verity Preview From Clarity
     Click Button  class: fa fa-eye
     Sleep  1
+
+Click New Question
+    Click Element    id: newQuestionButton
+
+
+Add New Reference Question
+    Click New Question
