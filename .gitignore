@@ -1,6 +1,7 @@
 *.png
 results/*
-__pycache__/*
+*/__pycache__/*
 .idea/*
 logs/*
 *.bat
+*.log

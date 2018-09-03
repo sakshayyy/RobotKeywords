@@ -1,6 +1,7 @@
 # To use this file in your tests use "Library  resources/PythonKeywords.py"
 import psycopg2
 from psycopg2 import sql
+from time import
 
 
 class PythonKeywords:

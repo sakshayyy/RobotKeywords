@@ -2,8 +2,8 @@
 Library  SeleniumLibrary
 #Library   PythonKeywords.py
 Force Tags  Unity
-Suite Setup  Run Keywords  Open Browser  ${page}  ${browser}
-...             AND           maximize browser window
+Suite Setup  Run Keywords  Open Browser  ${PAGE}  ${BROWSER}
+...             AND           maximize BROWSER window
 #...             AND           Set Selenium Speed  0.1
 Suite Teardown  Close Browser
 Test Setup      Run Keywords  Reload Page
@@ -11,154 +11,184 @@ Test Setup      Run Keywords  Reload Page
 
 
 *** Variables ***
-@{stage_type}  RESOLVE_IDENTITY  MANAGE_PARTY  CHECK_AND_VALIDATE  DECISION_MAKING  FULFILLMENT  FULFILLMENT_EXECUTION  RIS
-@{event_publish}  SELF  ALL  NONE
-${browser}      GoogleChrome
-${rootnode}     xpath: //*[contains(@id, 'qId_/_')]
-@{staticbranch}  D o  Not  Alter  This  Branch
-@{edit_sdt}     EDIT  RIS  ActivityX  Questionnaire : 920501285  New page
-@{testbranch}       Cat 1 - Auto   Cat 2 - Auto   Cat 3 - Auto  Cat 4 - Auto  Cat 5 - Auto
+@{STAGE_TYPE}  RESOLVE_IDENTITY  MANAGE_PARTY  CHECK_AND_VALIDATE  DECISION_MAKING  FULFILLMENT  FULFILLMENT_EXECUTION  RIS
+@{PUBLISH_EVENT_TYPE}  SELF  ALL  NONE
+${BROWSER}      GoogleChrome
+${ROOT}     xpath: //*[contains(@id, 'qId_/_')]
+@{BASE_BRANCH_CAT}  D o  Not  Alter  This  Branch
+@{BASE_BRANCH_NODES}     EDIT  RIS  ActivityX  Questionnaire : 920501285  New page
+@{NEW_BRANCH_CAT}         Auto 1    Auto 2    Auto 3    Auto 4    Auto 5
 
 
 
 *** Test Cases ***
 
-Test Add SDT Root  #Add SDT via root node
+Test Add SDT Root
     [Documentation]  Should create a new SDT with the context menu from Root
-    [Tags]  Unity  SDT  Add  succeed
+    [Tags]  Unity  SDT  Add
     Given Title Should Be   Unity
-    When Element Should Be Visible    ${rootnode}
-    And Add SDT  ${rootnode}  AUTO_GEN_SDT_ROOT  From Root  @{testbranch}
+    When Element Should Be Visible    ${ROOT}
+    And Add SDT  ${ROOT}  AUTO_GEN_SDT_ROOT  From Root  @{NEW_BRANCH_CAT}
     And Sleep    1
-    And Expand Node    @{testbranch}[0]
+    And Expand Node    @{NEW_BRANCH_CAT}[0]
     Then Element Should Be Visible   xpath: //*[text() = 'From Root']
 
 
-Test Remove SDT From Root  #Remove
+Test Remove SDT From Root
     #TODO - make less static
     [Documentation]  Should remove the SDT from "Add SDT Cat 3"
-    [Tags]  Unity  SDT  Remove  succeed
+    [Tags]  Unity  SDT  Remove
     Given Title Should Be   Unity
-    When Expand Node  @{testbranch}[0]
+    When Expand Node  @{NEW_BRANCH_CAT}[0]
     And Element Should Be Visible    xpath: //*[text() = 'From Root']
     And Remove SDT   xpath: //*[text() = 'From Root']
     Then element should not be visible   xpath: //*[text() = 'From Root']
 
 
-Test Add SDT Cat 3  #Add SDT via specified cat 3 node
+Test Add SDT Cat 3   #Add SDT via specified cat 3 node
     #TODO - make less static
-    [Documentation]  Should create a new SDT with the context menu from a catagoty 3 node
-    [Tags]  Unity  SDT  Add  succeed
+    [Documentation]  Should create a new SDT with the context menu from a catagoty 3 node in a different branch
+    [Tags]  Unity  SDT  Add
     Given Title Should Be   Unity
-    When Expand Node  @{staticbranch}[0]  #Name of parent node
-    And Add SDT       xpath: //*[text() = 'Alter']  AUTO_GEN_SDT_CAT3  From Cat 3  @{testbranch}
-    And Expand Node    @{testbranch}[0]
-    And Expand Node  @{staticbranch}[0]
+    When Expand Node  @{BASE_BRANCH_CAT}[0]  #Name of parent node
+    And Add SDT       xpath: //*[text() = 'Alter']  AUTO_GEN_SDT_CAT3  From Cat 3  @{BASE_BRANCH_CAT}
     Then Element Should Be Visible   xpath: //*[text() = 'From Cat 3']
+
+
+Test Add SDT Cat 3 New Branch   #Add SDT via specified cat 3 node
+    #TODO - make less static
+    [Documentation]  Should create a new SDT with the context menu from a catagoty 3 node in a different branch
+    [Tags]  Unity  SDT  Add
+    Given Title Should Be   Unity
+    When Expand Node  @{BASE_BRANCH_CAT}[0]  #Name of parent node
+    And Add SDT       xpath: //*[text() = 'Alter']  AUTO_GEN_SDT_CAT3_NB  From Cat 3 NB  @{NEW_BRANCH_CAT}
+    And Expand Node    @{NEW_BRANCH_CAT}[0]
+    And Expand Node  @{BASE_BRANCH_CAT}[0]
+    Then Element Should Be Visible   xpath: //*[text() = 'From Cat 3 NB']
 
 
 Test Edit SDT
     [Documentation]  Should create a new SDT with the context menu from Root
-    [Tags]  Unity  SDT  Edit  succeed
+    [Tags]  Unity  SDT  Edit
     Given Title Should Be   Unity
-    When Expand Node  @{staticbranch}[0]
-    And Element Should Be Visible  xpath: //*[text() = '@{edit_sdt}[0]']
-    When Edit SDT   xpath: //*[text() = '@{edit_sdt}[0]']  @{staticbranch}  TEST_EDIT  Edit Test
+    When Expand Node  @{BASE_BRANCH_CAT}[0]
+    And Element Should Be Visible  xpath: //*[text() = '@{BASE_BRANCH_NODES}[0]']
+    When Edit SDT   xpath: //*[text() = '@{BASE_BRANCH_NODES}[0]']  @{BASE_BRANCH_CAT}  TEST_EDIT  Edit Test
     Then element should be visible  xpath: //*[text() = 'Edit Test']
-    And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  @{edit_sdt}[0]
+    And Edit SDT   xpath: //*[text() = 'Edit Test']  @{BASE_BRANCH_CAT}  EDIT  @{BASE_BRANCH_NODES}[0]
 
 
-Test Remove SDT  #
+Test Clone SDT To Same Branch
+    [Documentation]   Should create a clone SDT from EDIT
+    [Tags]  Unity  Clone  SDT
+    Given Title Should Be   Unity
+    When Expand Node   @{BASE_BRANCH_CAT}[0]
+    And Clone SDT    xpath: //*[text() = '@{BASE_BRANCH_NODES}[0]']    EDIT_CLONE   Clone Of EDIT  @{BASE_BRANCH_CAT}
+    Then Element Should Be Visible   xpath: //*[text() = 'Clone Of EDIT']
+
+
+Test Clone SDT To New Branch
+    [Documentation]   Should create a clone SDT from EDIT under new catagories
+    [Tags]  Unity  Clone  SDT
+    Given Title Should Be   Unity
+    When Expand Node   @{BASE_BRANCH_CAT}[0]
+    And Clone SDT    xpath: //*[text() = '@{BASE_BRANCH_NODES}[0]']    EDIT_CLONE_NB   Clone Of EDIT NB  @{NEW_BRANCH_CAT}
+    And Expand Node    @{NEW_BRANCH_CAT}[0]
+    And Expand Node  @{BASE_BRANCH_CAT}[0]
+    Then Element Should Be Visible   xpath: //*[text() = 'Clone Of EDIT NB']
+
+
+Test Remove SDT
     #TODO - make less static
     [Documentation]  Should remove the SDT from "Add SDT Cat 3"
-    [Tags]  Unity  SDT  Remove  succeed
-    Given Title Should Be   Unity
-    When Expand Node  @{testbranch}[0]
-    And Element Should Be Visible    xpath: //*[text() = 'From Cat 3']
-    And Remove SDT   xpath: //*[text() = 'From Cat 3']
-    Then element should not be visible   xpath: //*[text() = 'From Cat 3']
+    [Tags]  Unity  SDT  Remove
+    [Template]  Remove SDT Template
+    From Cat 3          @{BASE_BRANCH_CAT}[0]
+    From Cat 3 NB       @{NEW_BRANCH_CAT}[0]
+    Clone Of EDIT       @{BASE_BRANCH_CAT}[0]
+    Clone Of EDIT NB    @{NEW_BRANCH_CAT}[0]
 
 
 Test Add Stage  #Add New Stage
     [Documentation]  Add Stage to Existing branch
     [Tags]  Unity  Stage  Add  succeed
     Given Title Should Be   Unity
-    When Expand Node   @{staticbranch}[0]
-    And Expand Node    @{edit_sdt}[0]
-    And Add Stage    xpath: //*[text() = '@{edit_sdt}[0]']    TEST    @{stage_type}[3]  @{event_publish}[0]
-    Then Element Should Be Visible  xpath: //*[text() = '@{stage_type}[3]']
+    When Expand Node   @{BASE_BRANCH_CAT}[0]
+    And Expand Node    @{BASE_BRANCH_NODES}[0]
+    And Add Stage    xpath: //*[text() = '@{BASE_BRANCH_NODES}[0]']    TEST    @{STAGE_TYPE}[3]  @{PUBLISH_EVENT_TYPE}[0]
+    Then Element Should Be Visible  xpath: //*[text() = '@{STAGE_TYPE}[3]']
 
 
 Test Edit Stage
     [Documentation]  Should edit Stage values
-    [Tags]  Unity  Stage  Edit  succeed
+    [Tags]  Unity  Stage  Edit
     Given Title Should Be   Unity
-    When Expand Node   @{staticbranch}[0]
-    And Expand Node    @{edit_sdt}[0]
-    And Edit Stage    xpath: //*[text()="@{edit_sdt}[1]"]   EVENT    ALL
-    Then element should be visible  xpath: //*[text()="@{edit_sdt}[1]"]
+    When Expand Node   @{BASE_BRANCH_CAT}[0]
+    And Expand Node    @{BASE_BRANCH_NODES}[0]
+    And Edit Stage    xpath: //*[text()="@{BASE_BRANCH_NODES}[1]"]   EVENT    ALL
+    Then element should be visible  xpath: //*[text()="@{BASE_BRANCH_NODES}[1]"]
 
 
 Test Remove Stage
-    [Tags]  Unity
+    [Tags]  Unity  Stage  Remove
     Given Title Should Be   Unity
-    When Expand Node   @{staticbranch}[0]
-    And Expand Node    @{edit_sdt}[0]
-    And Remove Stage    xpath: //*[text()='@{stage_type}[3]']
-    Then Element Should Not Be Visible  xpath: //*[text() = '@{stage_type}[3]']
+    When Expand Node   @{BASE_BRANCH_CAT}[0]
+    And Expand Node    @{BASE_BRANCH_NODES}[0]
+    And Remove Stage    xpath: //*[text()='@{STAGE_TYPE}[3]']
+    Then Element Should Not Be Visible  xpath: //*[text() = '@{STAGE_TYPE}[3]']
 
 
 Test Add Activity
-    [Tags]  Unity
+    [Tags]  Unity  Add   Activity
     Given Title Should Be   Unity
-    When Expand Node   @{staticbranch}[0]
-    And Expand Node    @{edit_sdt}[0]
-    And Add Activity  xpath: //*[text() = '@{edit_sdt}[1]']  Auto Activity  @{event_publish}[0]
+    When Expand Node   @{BASE_BRANCH_CAT}[0]
+    And Expand Node    @{BASE_BRANCH_NODES}[0]
+    And Add Activity  xpath: //*[text() = '@{BASE_BRANCH_NODES}[1]']  Auto Activity  @{PUBLISH_EVENT_TYPE}[0]
     Then Element Should Be Visible  xpath: //*[text() = 'Auto Activity']
 
 
 Test Edit Activity
     [Documentation]  Should edit Stage values
-    [Tags]  Unity  Stage  Edit  succeed
+    [Tags]  Unity  Activity  Edit
     Given Title Should Be   Unity
-    When Expand Node   @{staticbranch}[0]
-    And Expand Node    @{edit_sdt}[0]
+    When Expand Node   @{BASE_BRANCH_CAT}[0]
+    And Expand Node    @{BASE_BRANCH_NODES}[0]
     And Edit Activity   xpath: //*[text()="Auto Activity"]   Auto Activity Edit    ALL
     Then Element Should Be Visible  xpath: //*[text() = 'Auto Activity Edit']
 
 
 Test Remove Activity
-    [Tags]  Unity
+    [Tags]  Unity  Activity   Remove
     Given Title Should Be   Unity
-    When Expand Node   @{staticbranch}[0]
-    And Expand Node    @{edit_sdt}[0]
+    When Expand Node   @{BASE_BRANCH_CAT}[0]
+    And Expand Node    @{BASE_BRANCH_NODES}[0]
     And Remove Activity  xpath: //*[text()='Auto Activity Edit']
     Then Element Should not Be Visible  xpath: //*[text() = 'Auto Activity Edit']
 
 
 Test Add Form
-    [Tags]  Unity
+    [Tags]  Unity  Add   Form
     Given Title Should Be   Unity
-    When Expand Node   @{staticbranch}[0]
-    And Expand Node    @{edit_sdt}[0]
+    When Expand Node   @{BASE_BRANCH_CAT}[0]
+    And Expand Node    @{BASE_BRANCH_NODES}[0]
     And Add Form    xpath: //*[text() = 'ActivityX']
 
 
 Test Remove Form
-    [Tags]  Unity
+    [Tags]  Unity   Form  Remove
     Given Title Should Be   Unity
-    When Expand Node   @{staticbranch}[0]
-    And Expand Node    @{edit_sdt}[0]
-    ${form_name}=   Get Text    xpath: (//*[contains(text(), "Questionnaire :")[1]
+    When Expand Node   @{BASE_BRANCH_CAT}[0]
+    And Expand Node    @{BASE_BRANCH_NODES}[0]
+    ${form_name}=   Get Text    xpath: (//*[contains(text(), "Questionnaire :")])[1]
     And Remove Form    xpath: //*[text()= "${form_name}"]
     Then Element Should not Be Visible    xpath: //*[text()= "${form_name}"]
 
 
 Test Add Page
-    [Tags]  Unity
+    [Tags]  Unity   Add   Page
     Given Title Should Be   Unity
-    When Expand Node    @{staticbranch}[0]
-    And Expand Node    @{edit_sdt}[0]
+    When Expand Node    @{BASE_BRANCH_CAT}[0]
+    And Expand Node    @{BASE_BRANCH_NODES}[0]
     ${form_name}=   Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
     And Add Page In Unity    xpath: //*[text() = '${form_name}']    Test_New_Page
     Then Element Should Be Visible    xpath: //*[contains(text(),' : Test_New_Page')]
@@ -166,41 +196,46 @@ Test Add Page
 
 Test Edit Page
     [Documentation]  Should edit Stage values
-    [Tags]  Unity  Stage  Edit  succeed
+    [Tags]  Unity  Page  Edit
     Given Title Should Be   Unity
-    When Expand Node   @{staticbranch}[0]
-    And Expand Node    @{edit_sdt}[0]
+    When Expand Node   @{BASE_BRANCH_CAT}[0]
+    And Expand Node    @{BASE_BRANCH_NODES}[0]
     And Edit Page  xpath: //*[contains(text(),": Test_New_Page")]   Test_New_Page_Edit
-    Then Element Should Be Visible  xpath: //*[contains(text(),": Test_New_Page_Edit"]
+    Then Element Should Be Visible  xpath: //*[contains(text(),": Test_New_Page_Edit")]
 
 
 Open Clarity From Unity
-    [Tags]  Unity  Clarity
+    [Tags]  Unity  Clarity   SwitchPage
     Given Title Should Be   Unity
-    When Expand Node   @{staticbranch}[0]
-    And Expand Node    @{edit_sdt}[0]
+    When Expand Node   @{BASE_BRANCH_CAT}[0]
+    And Expand Node    @{BASE_BRANCH_NODES}[0]
     ${form_name}=  Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
     And Open Form In Clarity  xpath: //*[text()="${form_name}"]
     Then Clarity Form Should Be Open
 
 
 Add controls
-    [Tags]  Clarity
+    [Tags]  Clarity   Control   Add
     [Template]  Add Control Template
     Alert  alert-control
     Data  data-control
     External Link  externallink-control
     File upload  fileupload-control
     Internal Link  internallink-control
-    Key Value List  labelwithtext-control
     Review Card  reviewcard-control
     Rich Message  richmessage-control
     Separator  separator-control
     Spacer  spacer-control
 
+# Add key/value control
+#     [Tags]  Clarity
+#     [Template]  Add Control Template
+#     Key Value List  labelwithtext-control
+
+
 
 Controls Numberd in Ordered View
-    [Tags]  Clarity
+    [Tags]  Clarity   View
     Given Clarity Form Should Be Open
     ${before}=  Get Element Count    xpath: //*[contains(@class, "displayOrder")]
     When Toggle Ordered View
@@ -210,7 +245,7 @@ Controls Numberd in Ordered View
 
 
 Ordered Correctly
-    [Tags]  Clarity
+    [Tags]  Clarity   View
     Given Clarity Form Should Be Open
     Toggle Ordered View
     @{numbers}=  Get WebElements    xpath: //*[contains(@class, "displayOrder")]
@@ -221,7 +256,7 @@ Ordered Correctly
 
 
 Controls Contracted
-    [Tags]  Clarity
+    [Tags]  Clarity   View
     Given Clarity Form Should Be Open
     ${uncompressed}=  Get Element Count    xpath: //*[contains(@class, "locatorform-group main-question new-control")]
     When Toggle Compressed View
@@ -239,14 +274,13 @@ Controls Contracted
 
 
 Remove Controls
-    [Tags]  Clarity
+    [Tags]  Clarity  Remove   Control
     [Template]  Remove Control
     alert-control
     data-control
     externallink-control
     fileupload-control
     internallink-control
-    labelwithtext-control
     reviewcard-control
     richmessage-control
     separator-control
@@ -254,7 +288,7 @@ Remove Controls
 
 
 Add Page in Clarity
-    [Tags]  Clarity
+    [Tags]  Clarity  Add   Page
     Given Clarity Form Should Be Open
     ${pages_before}=  Get Element Count    //*[contains(@class,"md-button md-theme-default")]
     When Add Page in Clarity
@@ -263,7 +297,7 @@ Add Page in Clarity
 
 
 Delete Page in Clarity
-    [Tags]  Clarity
+    [Tags]  Clarity   Remove   Page
     Given Clarity Form Should Be Open
     ${page_count1}=  Get Element Count  //*[contains(@class,"md-button md-theme-default")]
     Given Element Should Be Visible    class: button-delete-page
@@ -273,7 +307,7 @@ Delete Page in Clarity
 
 
 Open Quesestion Editor
-    [Tags]  Clarity
+    [Tags]  Clarity   SwitchPage
     Given Clarity Form Should Be Open
     When Click Question Editor Button
     @{windows}=  Get Window Handles
@@ -289,16 +323,18 @@ Open Quesestion Editor
 #     And Save Question
 #     Then Look For Event Success Message
 
+
 Add Reference Question And Discard
-    [Tags]  Question Editor
+    [Tags]  Question Editor    RefQuestion
     Given Title Should Be    Clarity - Questions
     When Add New Reference Question
     And Fill RefQuestion Type Label    KEY    label_text    hint_text
     And Discard Question Changes
     #Then Look For Event Success Message
 
+
 Edit Existing Reference Question
-    [Tags]  Question Editor
+    [Tags]  Question Editor    RefQuestion
     Given Title Should Be    Clarity - Questions
     When Search For Question  label_text
     And Click Edit Question
@@ -308,7 +344,7 @@ Edit Existing Reference Question
 
 
 Check if Questions Start compressed
-    [Tags]  Question Editor
+    [Tags]  Question Editor    View
     Given Title Should Be    Clarity - Questions
     When Search For Question  label_text
     Then Element Should Be Visible   xpath: //*[contains(@class," compressed")]
@@ -320,7 +356,9 @@ Check if Questions Start compressed
 Fail If
     [Arguments]  ${expression}  ${message}
     ${cond}=  Evaluate    ${expression}
-    Run Keyword If  ${cond}   Fail  ${message}
+    Run Keyword If  ${cond}   Capture Page Screenshot
+    Run Keyword If  ${cond}   Fail   ${message}
+
 
 Expand Node      # Click on an element by its text
     [Arguments]  ${text}
@@ -339,7 +377,7 @@ Bad Restricted Input
     [Arguments]  ${locator}   ${input}
     Element Should Be Visible    ${locator}
     Input And Check   ${locator}   ${input}
-    #value     ${locator}   ${input}
+    Fail If   ${locator}==${input}   Input not correctly restricted
 
 
 Input And Check
@@ -350,19 +388,19 @@ Input And Check
 
 
 Click Confirm   # Click the Save button at the bottom of Add, remove and edit panes
-    click button  class: btn-success
-    Sleep   1
+    click button   class: btn-success
+    Sleep    1
 
 
 Click Cancel    # Click the cancel button at the bottom of Add, remove and edit panes
     click button  class: btn-danger
-    Sleep   1
+    Sleep   0.5
 
 
 Item From Context Menu  # Selects the action from the Context menu by text
     [Arguments]     ${locator}  ${action}
     Open Context Menu  ${locator}
-    Sleep    0.1
+    Wait Until Element Is Visible    xpath: //*[@class="popup context-menu"]
     click element   xpath: //*[text()= '${action}']
     sleep  1
 
@@ -401,6 +439,20 @@ Add SDT  #
     Input And Check  id: Text        ${text}
     Click Confirm
 
+
+Clone SDT
+    [Arguments]  ${parent}  ${code}  ${text}  @{Catagories}
+    Item From Context Menu  ${parent}  Clone
+    Input And Check  id: Category1   @{Catagories}[0]
+    Input And Check  id: Category2   @{Catagories}[1]
+    Input And Check  id: Category3   @{Catagories}[2]
+    Input And Check  id: Category4   @{Catagories}[3]
+    Input And Check  id: Category5   @{Catagories}[4]
+    Input And Check  id: Code        ${code}
+    Input And Check  id: Text        ${text}
+    Click Confirm
+
+
 Remove Node  # Generic Remove
     [Arguments]  ${node_name}  ${type}
     Item From Context Menu  ${node_name}  Remove ${type}
@@ -426,6 +478,18 @@ Remove Form
     [Arguments]  ${node_name}
     Item From Context Menu  ${node_name}  Remove Form
     Click Confirm
+
+
+Remove SDT Template
+    [Arguments]   ${sdt_name}   @{catagories}
+    Given Title Should Be   Unity
+    :FOR  ${node}  IN  @{catagories}
+    \   Expand Node    ${node}
+    When Element Should Be Visible    xpath: //*[text() = '${sdt_name}']
+    And Remove SDT   xpath: //*[text() = '${sdt_name}']
+    Then element should not be visible   xpath: //*[text() = '${sdt_name}']
+    And Reload Page
+    And Sleep    2
 
 
 Edit SDT  #Open the edit menu for SDT make change and save
@@ -503,34 +567,31 @@ Open Properties Manager
     Item From Context Menu  ${locator}  Manage Properties
 
 
-Add Property
+Add Good Property
     [Arguments]   ${text}  ${text}
     Click Add
     Input And Check    xpath:(//*[@class='md-input'])[1]  ${text}
     Input And Check    xpath:(//*[@class='md-input'])[2]  ${text}
     Click Save
-    Sleep  1
 
 
 Cancel Property Changes
     Click Button  class="md-ripple"
-    Sleep  1
+    Sleep  0.5
 
 
 Click Add
     Click Button  class: addBtn
-    Sleep  1
 
 
 Click Save
     Click Button  xpath: //*[@class = "md-button md-dense md-raised md-primary md-theme-default"]
-    Sleep  1
+
 
 
 Click Cancel Button
     @{elems}=  Get Web Elements  //*[@class = "md-button md-fab md-fab-top-right md-mini cancelButton md-theme-default"]
     Click Button  @{elems}[-1]
-    Sleep  1
 
 
 Open Form In Clarity
@@ -551,38 +612,42 @@ Open Controls menu
 
 Add Control Via Button
     [Arguments]  ${control_name}
-    sleep  1
     Mouse Over     //*[text()="${control_name}"]/../..
     Wait Until Element Is Visible   //*[text()="${control_name}"]/following-sibling::span[@class = "add"]
     Click Element   //*[text()="${control_name}"]/following-sibling::span[@class = "add"]
 
 
 Add Control Template
-    [Arguments]  ${name}  ${id}
+    [Arguments]  ${name}  ${control}
     Given Clarity Form Should Be Open
+    ${inital_count}=    Get Element Count    //*[contains(@class,"${control}")]
     When Open Controls menu
     And Add Control Via Button  ${name}
-    Then Wait Until Element Is Visible   //*[contains(@class,"${id}")]
+    Then Wait Until Element Is Visible   //*[contains(@class,"${control}")]
+    And Look For Event Success Message
+    ${final_count}=   Get Element Count    //*[contains(@class,"${control}")]
+    And Fail If    ${inital_count}+1!=${final_count}     Control not added correctly
 
 
 Remove Control
     [Arguments]  ${control}
     Given Clarity Form Should Be Open
+    ${inital_count}=    Get Element Count    //*[contains(@class,"${control}")]
     When Mouse Over    xpath: //*[@class="${control}"]
     And Wait Until Element Is Visible    xpath: //*[@class="${control}"]/following-sibling::button[@id= "deleteControlButton"]
     And Click Button   xpath: //*[@class="${control}"]/following-sibling::button[@id= "deleteControlButton"]
-    Then Sleep    1
-    And Element Should Not Be Visible    xpath: //*[@class="${control}"]
+    Then Look For Event Success Message
+    ${final_count}=   Get Element Count    //*[contains(@class,"${control}")]
+    And Fail If    ${inital_count}-1!=${final_count}     Control not removed correctly
+    And Close toast message
 
 
 Reorder
     [Arguments]  ${locator}  ${target}
     Given Clarity Form Should Be Open
     When Mouse Over  xpath: //*[@class='${locator}']/*[@class="vddl-handle handle"]/i
-    And Sleep  1
     And Mouse Down  //*[@class='${locator}']/*[@class="vddl-handle handle"]/i
     And Mouse Over   xpath: //*[@class='${target}']
-    And Sleep  1
     And Mouse Up    xpath: //*[@class='${target}']
     # TODO - create check to conferm reorder
     #Should Be True    //*
@@ -591,27 +656,24 @@ Reorder
 
 Add Page in Clarity
     Click Button  class: button-add-page
-    Sleep  1
+    Look For Event Success Message
 
 
 Delete Page in Clarity
     Click Button  class: button-delete-page
-    Sleep  1
+    Look For Event Success Message
 
 
 Toggle Compressed View
     Click Button  class: button-compressedmode
-    Sleep  1
 
 
 Toggle Ordered View
     Click Button  class: button-displayorder
-    Sleep  1
 
 
 Open Control Editor
     Click Button    class: fa fa-edit
-    Sleep  1
 
 
 Click Question Editor Button
@@ -620,7 +682,6 @@ Click Question Editor Button
 
 Verity Preview From Clarity
     Click Button  class: fa fa-eye
-    Sleep  1
 
 
 Click New Question
@@ -629,14 +690,13 @@ Click New Question
 
 Click Edit Question
     Mouse Over    xpath: //*[@class="form-group main-question new-control compressed"]
-    Sleep    0.1
     Click Element    id: editControlButton
 
 
 Search For Question
     [Arguments]  ${label}
     Input And Check    xpath: //*[text()="Find by Label"]/following-sibling::input    ${label}
-    Sleep    0.5
+    sleep    0.3
     Wait Until Element Is Not Visible    xpath: //*[@class="spinner"]
 
 
@@ -662,11 +722,14 @@ Fill RefQuestion Type Label
 
 Save Question
     Click Button    id: doneEditControlButton
-    Sleep    0.1
 
 
 Discard Question Changes
     Click Button    id: cancelEditControlButton
+
+
+Close toast message
+    Click Button    class: toast-close-button
 
 
 Get Event Message
@@ -675,6 +738,10 @@ Get Event Message
 
 
 Look For Event Success Message
-    Wait Until Element Is Enabled    class: toast-message
-    ${event_text}=  Get Event Message
-    Should Be Equal As Strings    ${event_text}    Question saved successfully
+    Wait Until Element Is Visible    class: toast-message
+    Element Should Be Visible    xpath: //*[@class="toast toast-success"]
+
+
+Look For Event Failure Message
+    Wait Until Element Is Visible    class: toast-message
+    Element Should Be Visible    xpath: //*[@class="toast toast-error"]

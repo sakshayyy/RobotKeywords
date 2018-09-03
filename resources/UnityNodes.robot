@@ -16,141 +16,165 @@ Test Teardown   Reload Page
 
 *** Test Cases ***
 
-Test Add SDT Root
-    [Documentation]   Create a new SDT with the context menu from Root
-    [Tags]  SDT  Add  succeed
-    Given Element Should Be Visible    ${ROOT}
-    When Add SDT  ${ROOT}  AUTO_GEN_SDT_ROOT  From Root  @{NEW_BRANCH_CAT}
+Test Add SDT Root  #Add SDT via root node
+    [Documentation]  Should create a new SDT with the context menu from Root
+    [Tags]  Unity  SDT  Add  succeed
+    Given Title Should Be   Unity
+    When Element Should Be Visible    ${rootnode}
+    And Add SDT  ${rootnode}  AUTO_GEN_SDT_ROOT  From Root  @{testbranch}
     And Sleep    1
-    Then Expand Node    @{NEW_BRANCH_CAT}[0]
-    And Element Should Be Visible   xpath: //*[text() = 'From Root']
+    And Expand Node    @{testbranch}[0]
+    Then Element Should Be Visible   xpath: //*[text() = 'From Root']
 
 
 Test Remove SDT From Root  #Remove
     #TODO - make less static
     [Documentation]  Should remove the SDT from "Add SDT Cat 3"
-    [Tags]  SDT  Remove  succeed
-    Given Expand Node  @{NEW_BRANCH_CAT}[0]
+    [Tags]  Unity  SDT  Remove  succeed
+    Given Title Should Be   Unity
+    When Expand Node  @{testbranch}[0]
     And Element Should Be Visible    xpath: //*[text() = 'From Root']
-    When Remove SDT   xpath: //*[text() = 'From Root']
+    And Remove SDT   xpath: //*[text() = 'From Root']
     Then element should not be visible   xpath: //*[text() = 'From Root']
 
 
 Test Add SDT Cat 3  #Add SDT via specified cat 3 node
     #TODO - make less static
     [Documentation]  Should create a new SDT with the context menu from a catagoty 3 node
-    [Tags]  SDT  Add  succeed
-    Given Expand Node  @{BASE_BRANCH_CAT}[0]  #Name of parent node
-    When Add SDT       xpath: //*[text() = 'Alter']  AUTO_GEN_SDT_CAT3  From Cat 3  @{NEW_BRANCH_CAT}
-    Then Expand Node    @{NEW_BRANCH_CAT}[0]
-    And Expand Node  @{BASE_BRANCH_CAT}[0]
-    And Element Should Be Visible   xpath: //*[text() = 'From Cat 3']
+    [Tags]  Unity  SDT  Add  succeed
+    Given Title Should Be   Unity
+    When Expand Node  @{staticbranch}[0]  #Name of parent node
+    And Add SDT       xpath: //*[text() = 'Alter']  AUTO_GEN_SDT_CAT3  From Cat 3  @{testbranch}
+    And Expand Node    @{testbranch}[0]
+    And Expand Node  @{staticbranch}[0]
+    Then Element Should Be Visible   xpath: //*[text() = 'From Cat 3']
 
 
 Test Edit SDT
     [Documentation]  Should create a new SDT with the context menu from Root
-    [Tags]  SDT  Edit  succeed
-    Given Expand Node  @{BASE_BRANCH_CAT}[0]
-    And Element Should Be Visible  xpath: //*[text() = '@{BASE_BRANCH_NODES}[0]']
-    When Edit SDT   xpath: //*[text() = '@{BASE_BRANCH_NODES}[0]']  @{BASE_BRANCH_CAT}  TEST_EDIT  Edit Test
+    [Tags]  Unity  SDT  Edit  succeed
+    Given Title Should Be   Unity
+    When Expand Node  @{staticbranch}[0]
+    And Element Should Be Visible  xpath: //*[text() = '@{edit_sdt}[0]']
+    When Edit SDT   xpath: //*[text() = '@{edit_sdt}[0]']  @{staticbranch}  TEST_EDIT  Edit Test
     Then element should be visible  xpath: //*[text() = 'Edit Test']
-    And Edit SDT   xpath: //*[text() = 'Edit Test']  @{BASE_BRANCH_CAT}  EDIT  @{BASE_BRANCH_NODES}[0]
+    And Edit SDT   xpath: //*[text() = 'Edit Test']  @{staticbranch}  EDIT  @{edit_sdt}[0]
 
 
 Test Remove SDT  #
     #TODO - make less static
     [Documentation]  Should remove the SDT from "Add SDT Cat 3"
-    [Tags]  SDT  Remove  succeed
-    Given Expand Node  @{NEW_BRANCH_CAT}[0]
+    [Tags]  Unity  SDT  Remove  succeed
+    Given Title Should Be   Unity
+    When Expand Node  @{testbranch}[0]
     And Element Should Be Visible    xpath: //*[text() = 'From Cat 3']
-    When Remove SDT   xpath: //*[text() = 'From Cat 3']
+    And Remove SDT   xpath: //*[text() = 'From Cat 3']
     Then element should not be visible   xpath: //*[text() = 'From Cat 3']
 
 
 Test Add Stage  #Add New Stage
     [Documentation]  Add Stage to Existing branch
-    [Tags]  Stage  Add  succeed
-    Given Expand Node   @{BASE_BRANCH_CAT}[0]
-    And Expand Node    @{BASE_BRANCH_NODES}[0]
-    When Add Stage    xpath: //*[text() = '@{BASE_BRANCH_NODES}[0]']    test    @{STAGE_TYPE}[3]  @{PUBLISH_EVENT_TYPE}[0]
-    Then Element Should Be Visible  xpath: //*[text() = '@{STAGE_TYPE}[3]']
+    [Tags]  Unity  Stage  Add  succeed
+    Given Title Should Be   Unity
+    When Expand Node   @{staticbranch}[0]
+    And Expand Node    @{edit_sdt}[0]
+    And Add Stage    xpath: //*[text() = '@{edit_sdt}[0]']    TEST    @{stage_type}[3]  @{event_publish}[0]
+    Then Element Should Be Visible  xpath: //*[text() = '@{stage_type}[3]']
 
 
 Test Edit Stage
     [Documentation]  Should edit Stage values
-    [Tags]  Stage  Edit  succeed
-    Expand Node   @{BASE_BRANCH_CAT}[0]
-    Expand Node    @{BASE_BRANCH_NODES}[0]
-    Edit Stage    xpath: //*[text()="@{BASE_BRANCH_NODES}[1]"]   event    ALL
-    element should be visible  xpath: //*[text()="@{BASE_BRANCH_NODES}[1]"]
-    Edit Stage    xpath: //*[text()="@{BASE_BRANCH_NODES}[1]"]   Auto    NONE
+    [Tags]  Unity  Stage  Edit  succeed
+    Given Title Should Be   Unity
+    When Expand Node   @{staticbranch}[0]
+    And Expand Node    @{edit_sdt}[0]
+    And Edit Stage    xpath: //*[text()="@{edit_sdt}[1]"]   EVENT    ALL
+    Then element should be visible  xpath: //*[text()="@{edit_sdt}[1]"]
 
 
 Test Remove Stage
-    Given Expand Node   @{BASE_BRANCH_CAT}[0]
-    And Expand Node    @{BASE_BRANCH_NODES}[0]
-    When Remove Stage    xpath: //*[text()='@{STAGE_TYPE}[3]']
-    Then Element Should Not Be Visible  xpath: //*[text() = '@{STAGE_TYPE}[3]']
+    [Tags]  Unity
+    Given Title Should Be   Unity
+    When Expand Node   @{staticbranch}[0]
+    And Expand Node    @{edit_sdt}[0]
+    And Remove Stage    xpath: //*[text()='@{stage_type}[3]']
+    Then Element Should Not Be Visible  xpath: //*[text() = '@{stage_type}[3]']
 
 
 Test Add Activity
-    Given Expand Node   @{BASE_BRANCH_CAT}[0]
-    And Expand Node    @{BASE_BRANCH_NODES}[0]
-    When Add Activity  xpath: //*[text() = '@{BASE_BRANCH_NODES}[1]']  Auto Activity  @{PUBLISH_EVENT_TYPE}[0]
+    [Tags]  Unity
+    Given Title Should Be   Unity
+    When Expand Node   @{staticbranch}[0]
+    And Expand Node    @{edit_sdt}[0]
+    And Add Activity  xpath: //*[text() = '@{edit_sdt}[1]']  Auto Activity  @{event_publish}[0]
     Then Element Should Be Visible  xpath: //*[text() = 'Auto Activity']
 
 
 Test Edit Activity
     [Documentation]  Should edit Stage values
-    [Tags]  Stage  Edit  succeed
-    Expand Node   @{BASE_BRANCH_CAT}[0]
-    Expand Node    @{BASE_BRANCH_NODES}[0]
-    Edit Activity   xpath: //*[text()="Auto Activity"]   event    ALL
-    Edit Activity   xpath: //*[text()="event"]   Auto Activity    ALL
+    [Tags]  Unity  Stage  Edit  succeed
+    Given Title Should Be   Unity
+    When Expand Node   @{staticbranch}[0]
+    And Expand Node    @{edit_sdt}[0]
+    And Edit Activity   xpath: //*[text()="Auto Activity"]   Auto Activity Edit    ALL
+    Then Element Should Be Visible  xpath: //*[text() = 'Auto Activity Edit']
 
 
 Test Remove Activity
-    Given Expand Node   @{BASE_BRANCH_CAT}[0]
-    And Expand Node    @{BASE_BRANCH_NODES}[0]
-    When Remove Activity  xpath: //*[text()='Auto Activity']
-    Then Element Should not Be Visible  xpath: //*[text() = 'Auto Activity']
+    [Tags]  Unity
+    Given Title Should Be   Unity
+    When Expand Node   @{staticbranch}[0]
+    And Expand Node    @{edit_sdt}[0]
+    And Remove Activity  xpath: //*[text()='Auto Activity Edit']
+    Then Element Should not Be Visible  xpath: //*[text() = 'Auto Activity Edit']
 
 
 Test Add Form
-    Given Expand Node   @{BASE_BRANCH_CAT}[0]
-    And Expand Node    @{BASE_BRANCH_NODES}[0]
-    When Add Form    xpath: //*[text() = 'ActivityX']
+    [Tags]  Unity
+    Given Title Should Be   Unity
+    When Expand Node   @{staticbranch}[0]
+    And Expand Node    @{edit_sdt}[0]
+    And Add Form    xpath: //*[text() = 'ActivityX']
 
 
 Test Remove Form
-    Expand Node   @{BASE_BRANCH_CAT}[0]
-    Expand Node    @{BASE_BRANCH_NODES}[0]
-    ${form_name}=   Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
-    Remove Form    ${form_name}
+    [Tags]  Unity
+    Given Title Should Be   Unity
+    When Expand Node   @{staticbranch}[0]
+    And Expand Node    @{edit_sdt}[0]
+    ${form_name}=   Get Text    xpath: (//*[contains(text(), "Questionnaire :")[1]
+    And Remove Form    xpath: //*[text()= "${form_name}"]
+    Then Element Should not Be Visible    xpath: //*[text()= "${form_name}"]
 
 
 Test Add Page
-    Given Expand Node    @{BASE_BRANCH_CAT}[0]
-    And Expand Node    @{BASE_BRANCH_NODES}[0]
+    [Tags]  Unity
+    Given Title Should Be   Unity
+    When Expand Node    @{staticbranch}[0]
+    And Expand Node    @{edit_sdt}[0]
     ${form_name}=   Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
-    When Add Page In Unity    xpath: //*[text() = '${form_name}']    Test_New_Page
+    And Add Page In Unity    xpath: //*[text() = '${form_name}']    Test_New_Page
     Then Element Should Be Visible    xpath: //*[contains(text(),' : Test_New_Page')]
 
 
 Test Edit Page
     [Documentation]  Should edit Stage values
-    [Tags]  Stage  Edit  succeed
-    Expand Node   @{BASE_BRANCH_CAT}[0]
-    Expand Node    @{BASE_BRANCH_NODES}[0]
-    Edit Page  xpath: //*[text()="@{BASE_BRANCH_NODES}"]   event
+    [Tags]  Unity  Stage  Edit  succeed
+    Given Title Should Be   Unity
+    When Expand Node   @{staticbranch}[0]
+    And Expand Node    @{edit_sdt}[0]
+    And Edit Page  xpath: //*[contains(text(),": Test_New_Page")]   Test_New_Page_Edit
+    Then Element Should Be Visible  xpath: //*[contains(text(),": Test_New_Page_Edit"]
 
 
 Open Clarity From Unity
-    [Tags]  Clarity
-    Expand Node   @{BASE_BRANCH_CAT}[0]
-    Expand Node    @{BASE_BRANCH_NODES}[0]
+    [Tags]  Unity  Clarity
+    Given Title Should Be   Unity
+    When Expand Node   @{staticbranch}[0]
+    And Expand Node    @{edit_sdt}[0]
     ${form_name}=  Get Text    xpath: //*[contains(text(), "Questionnaire :")][last()]
-    Open Form In Clarity  xpath: //*[text()="${form_name}"]
+    And Open Form In Clarity  xpath: //*[text()="${form_name}"]
+    Then Clarity Form Should Be Open
 
 
 *** Keywords ***
